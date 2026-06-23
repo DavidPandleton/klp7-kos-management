@@ -112,8 +112,10 @@ class AuthController
             }
 
             if ($v->passes()) {
-                $userModel->update(Auth::getUserId(), $_POST);
-                Session::set('user_nama', $_POST['username']);
+                $data = $_POST;
+                unset($data['role']);
+                $userModel->update(Auth::getUserId(), $data);
+                Session::set('user_nama', $data['username']);
                 Session::setFlash('success', 'Profil berhasil diupdate.');
                 header('Location: /auth/profile');
                 exit;
