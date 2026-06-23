@@ -6,13 +6,17 @@ session_start();
 
 use App\Helpers\Session;
 
-$url = $_GET['url'] ?? '';
+$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+$requestUri = parse_url($requestUri, PHP_URL_PATH);
+$requestUri = ltrim($requestUri, '/');
+$url = !empty($requestUri) ? $requestUri : ($_GET['url'] ?? '');
 $url = rtrim($url, '/');
 $url = filter_var($url, FILTER_SANITIZE_URL);
 $url = explode('/', $url);
 
 $controllerName = !empty($url[0]) ? ucfirst($url[0]) . 'Controller' : 'AuthController';
-$methodName = $url[1] ?? 'index';
+$defaultMethod = $controllerName === 'AuthController' ? 'login' : 'index';
+$methodName = $url[1] ?? $defaultMethod;
 $params = array_slice($url, 2);
 
 $controllerClass = "App\\Controllers\\" . $controllerName;
