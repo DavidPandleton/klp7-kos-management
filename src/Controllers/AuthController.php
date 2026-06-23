@@ -38,8 +38,9 @@ class AuthController
                     Session::set('user_nama', $user['username']);
                     Session::set('user_role', $user['role']);
                     Session::set('last_activity', time());
-
                     Session::setFlash('success', 'Selamat datang, ' . $user['username'] . '!');
+
+                    session_write_close();
                     header('Location: /dashboard');
                     exit;
                 }
