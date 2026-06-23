@@ -7,3 +7,4 @@ Thumbs.db
 *.png
 *.test.php
 .playwright-mcp/
+docs/
