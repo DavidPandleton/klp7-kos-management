@@ -3,7 +3,7 @@
     <h1 class="text-2xl font-bold mb-6">Dashboard Penyewa</h1>
 
     <div class="bg-white rounded shadow p-6 mb-4">
-        <h2 class="font-bold text-lg mb-2">Selamat datang, <?= Security::escapeHtml($_SESSION['user_nama']) ?>!</h2>
+        <h2 class="font-bold text-lg mb-2">Selamat datang, <?= \App\Helpers\Security::escapeHtml($_SESSION['user_nama']) ?>!</h2>
         <p class="text-gray-600">Gunakan menu di atas untuk:</p>
         <ul class="list-disc list-inside text-gray-600 mt-2">
             <li>Lihat daftar kamar yang tersedia</li>
