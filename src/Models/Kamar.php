@@ -49,19 +49,19 @@ class Kamar
 
     public function update(int $id, array $data): void
     {
-        $sql = "UPDATE kamar SET nomor_kamar=?, tipe=?, harga=?, kapasitas=?, fasilitas=?, status=?";
-        $params = [$data['nomor_kamar'], $data['tipe'], $data['harga'], $data['kapasitas'] ?? 1, $data['fasilitas'] ?? '', $data['status'] ?? 'tersedia'];
-
-        if (!empty($data['foto'])) {
-            $sql .= ", foto=?";
-            $params[] = $data['foto'];
-        }
-
-        $sql .= " WHERE id=?";
-        $params[] = $id;
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
+        $stmt = $this->db->prepare(
+            "UPDATE kamar SET nomor_kamar=?, tipe=?, harga=?, kapasitas=?, fasilitas=?, status=?, foto=? WHERE id=?"
+        );
+        $stmt->execute([
+            $data['nomor_kamar'],
+            $data['tipe'],
+            $data['harga'],
+            $data['kapasitas'] ?? 1,
+            $data['fasilitas'] ?? '',
+            $data['status'] ?? 'tersedia',
+            $data['foto'] ?? null,
+            $id
+        ]);
     }
 
     public function delete(int $id): void

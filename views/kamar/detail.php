@@ -1,3 +1,7 @@
+<?php 
+require_once __DIR__ . '/../../src/Helpers/Security.php';
+use App\Helpers\Security;
+?>
 <?php require_once __DIR__ . '/../layouts/header.php'; ?>
 <div class="max-w-2xl mx-auto bg-white rounded shadow p-6">
     <h1 class="text-2xl font-bold mb-4">Detail Kamar <?= Security::escapeHtml($kamar['nomor_kamar']) ?></h1>

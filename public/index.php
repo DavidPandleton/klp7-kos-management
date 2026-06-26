@@ -6,7 +6,28 @@ session_start();
 
 use App\Helpers\Session;
 
+<<<<<<< Updated upstream
 $url = $_GET['url'] ?? '';
+=======
+$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+$requestUri = parse_url($requestUri, PHP_URL_PATH);
+$requestUri = ltrim($requestUri, '/');
+
+// Serve static files dari uploads
+if (str_starts_with($requestUri, 'uploads/')) {
+    $filePath = __DIR__ . '/' . $requestUri;
+    if (file_exists($filePath)) {
+        $mime = mime_content_type($filePath);
+        header('Content-Type: ' . $mime);
+        readfile($filePath);
+        exit;
+    }
+    http_response_code(404);
+    exit;
+}
+
+$url = !empty($requestUri) ? $requestUri : ($_GET['url'] ?? '');
+>>>>>>> Stashed changes
 $url = rtrim($url, '/');
 $url = filter_var($url, FILTER_SANITIZE_URL);
 $url = explode('/', $url);

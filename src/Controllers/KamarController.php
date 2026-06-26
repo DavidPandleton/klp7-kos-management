@@ -11,12 +11,14 @@ use App\Helpers\Validator;
 class KamarController
 {
     private Kamar $kamar;
+    private string $uploadPath;
 
     public function __construct()
     {
         Auth::check();
         Auth::role(['admin', 'pemilik']);
         $this->kamar = new Kamar();
+        $this->uploadPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'kamar' . DIRECTORY_SEPARATOR;
     }
 
     public function index(): void
@@ -48,12 +50,13 @@ class KamarController
                 if ($v->passes()) {
                     $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
                     $foto = 'kamar_' . time() . '.' . $ext;
-                    move_uploaded_file($_FILES['foto']['tmp_name'], __DIR__ . '/../../uploads/kamar/' . $foto);
+                    move_uploaded_file($_FILES['foto']['tmp_name'], $this->uploadPath . $foto);
                 }
             }
 
             if ($v->passes()) {
                 $_POST['foto'] = $foto;
+                $_POST['fasilitas'] = implode(', ', $_POST['fasilitas'] ?? []);
                 $this->kamar->create($_POST);
                 Session::setFlash('success', 'Kamar berhasil ditambahkan.');
                 header('Location: /kamar/index');
@@ -81,20 +84,32 @@ class KamarController
             $v->numeric('harga', $_POST['harga'], 'Harga');
 
             $foto = $kamar['foto'];
+
+            // Hapus foto jika dicentang
+            if (isset($_POST['hapus_foto']) && $_POST['hapus_foto'] == '1') {
+                if ($kamar['foto'] && file_exists($this->uploadPath . $kamar['foto'])) {
+                    unlink($this->uploadPath . $kamar['foto']);
+                }
+                $foto = null;
+            }
+
+            // Upload foto baru jika ada
             if (!empty($_FILES['foto']['name'])) {
                 $v->file('foto', $_FILES['foto'], ['image/jpeg', 'image/png', 'image/jpg'], 2097152, 'Foto');
                 if ($v->passes()) {
                     $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-                    $foto = 'kamar_' . time() . '.' . $ext;
-                    move_uploaded_file($_FILES['foto']['tmp_name'], __DIR__ . '/../../uploads/kamar/' . $foto);
-                    if ($kamar['foto'] && file_exists(__DIR__ . '/../../uploads/kamar/' . $kamar['foto'])) {
-                        unlink(__DIR__ . '/../../uploads/kamar/' . $kamar['foto']);
+                    $newFoto = 'kamar_' . time() . '.' . $ext;
+                    move_uploaded_file($_FILES['foto']['tmp_name'], $this->uploadPath . $newFoto);
+                    if ($foto && file_exists($this->uploadPath . $foto)) {
+                        unlink($this->uploadPath . $foto);
                     }
+                    $foto = $newFoto;
                 }
             }
 
             if ($v->passes()) {
                 $_POST['foto'] = $foto;
+                $_POST['fasilitas'] = implode(', ', $_POST['fasilitas'] ?? []);
                 $this->kamar->update($id, $_POST);
                 Session::setFlash('success', 'Kamar berhasil diupdate.');
                 header('Location: /kamar/index');
@@ -110,8 +125,8 @@ class KamarController
     public function delete(int $id): void
     {
         $kamar = $this->kamar->find($id);
-        if ($kamar && $kamar['foto'] && file_exists(__DIR__ . '/../../uploads/kamar/' . $kamar['foto'])) {
-            unlink(__DIR__ . '/../../uploads/kamar/' . $kamar['foto']);
+        if ($kamar && $kamar['foto'] && file_exists($this->uploadPath . $kamar['foto'])) {
+            unlink($this->uploadPath . $kamar['foto']);
         }
         $this->kamar->delete($id);
         Session::setFlash('success', 'Kamar berhasil dihapus.');

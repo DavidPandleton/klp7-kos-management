@@ -21,11 +21,11 @@
         <div class="mb-3">
             <label class="block text-gray-700">Fasilitas</label>
             <div class="flex flex-wrap gap-4">
-                <label><input type="checkbox" name="fasilitas" value="AC"> AC</label>
-                <label><input type="checkbox" name="fasilitas" value="WiFi"> WiFi</label>
-                <label><input type="checkbox" name="fasilitas" value="Kamar Mandi Dalam"> Kamar Mandi Dalam</label>
-                <label><input type="checkbox" name="fasilitas" value="Lemari"> Lemari</label>
-                <label><input type="checkbox" name="fasilitas" value="Meja"> Meja</label>
+                <label><input type="checkbox" name="fasilitas[]" value="AC"> AC</label>
+                <label><input type="checkbox" name="fasilitas[]" value="WiFi"> WiFi</label>
+                <label><input type="checkbox" name="fasilitas[]" value="Kamar Mandi Dalam"> Kamar Mandi Dalam</label>
+                <label><input type="checkbox" name="fasilitas[]" value="Lemari"> Lemari</label>
+                <label><input type="checkbox" name="fasilitas[]" value="Meja"> Meja</label>
             </div>
         </div>
         <div class="mb-3">
