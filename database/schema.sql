@@ -70,9 +70,9 @@ CREATE TABLE pengaduan (
 
 -- SEED DATA
 INSERT INTO users (username, email, password, role) VALUES
-('admin', 'admin@kos.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin'),
-('pemilik1', 'pemilik@kos.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'pemilik'),
-('penyewa1', 'penyewa@kos.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'penyewa');
+('admin', 'admin@kos.com', '$2y$10$YUA4p4Kct662tQYTxXBSt.OjvI2gG6c/cEQX8gDp3CWvi7kJqj7nm', 'admin'),
+('pemilik1', 'pemilik@kos.com', '$2y$10$YUA4p4Kct662tQYTxXBSt.OjvI2gG6c/cEQX8gDp3CWvi7kJqj7nm', 'pemilik'),
+('penyewa1', 'penyewa@kos.com', '$2y$10$YUA4p4Kct662tQYTxXBSt.OjvI2gG6c/cEQX8gDp3CWvi7kJqj7nm', 'penyewa');
 -- password for all seeds above: password
 
 INSERT INTO kamar (nomor_kamar, tipe, harga, kapasitas, fasilitas, status) VALUES

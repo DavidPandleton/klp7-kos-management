@@ -4,3 +4,7 @@ uploads/
 *.log
 .DS_Store
 Thumbs.db
+*.png
+*.test.php
+.playwright-mcp/
+docs/

@@ -38,8 +38,9 @@ class AuthController
                     Session::set('user_nama', $user['username']);
                     Session::set('user_role', $user['role']);
                     Session::set('last_activity', time());
-
                     Session::setFlash('success', 'Selamat datang, ' . $user['username'] . '!');
+
+                    session_write_close();
                     header('Location: /dashboard');
                     exit;
                 }
@@ -111,8 +112,10 @@ class AuthController
             }
 
             if ($v->passes()) {
-                $userModel->update(Auth::getUserId(), $_POST);
-                Session::set('user_nama', $_POST['username']);
+                $data = $_POST;
+                unset($data['role']);
+                $userModel->update(Auth::getUserId(), $data);
+                Session::set('user_nama', $data['username']);
                 Session::setFlash('success', 'Profil berhasil diupdate.');
                 header('Location: /auth/profile');
                 exit;
