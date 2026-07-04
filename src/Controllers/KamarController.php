@@ -16,13 +16,15 @@ class KamarController
     public function __construct()
     {
         Auth::check();
-        Auth::role(['admin', 'pemilik']);
         $this->kamar = new Kamar();
         $this->uploadPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'kamar' . DIRECTORY_SEPARATOR;
     }
 
     public function index(): void
     {
+        // Semua role bisa lihat daftar kamar
+        Auth::role(['admin', 'pemilik', 'penyewa']);
+
         $status = $_GET['status'] ?? '';
         $filter = '';
         $params = [];
@@ -38,6 +40,8 @@ class KamarController
 
     public function create(): void
     {
+        Auth::role(['admin', 'pemilik']);
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $v = new Validator();
             $v->required('nomor_kamar', $_POST['nomor_kamar'], 'Nomor kamar');
@@ -71,6 +75,8 @@ class KamarController
 
     public function edit(int $id): void
     {
+        Auth::role(['admin', 'pemilik']);
+
         $kamar = $this->kamar->find($id);
         if (!$kamar) {
             http_response_code(404);
@@ -124,6 +130,8 @@ class KamarController
 
     public function delete(int $id): void
     {
+        Auth::role(['admin', 'pemilik']);
+
         $kamar = $this->kamar->find($id);
         if ($kamar && $kamar['foto'] && file_exists($this->uploadPath . $kamar['foto'])) {
             unlink($this->uploadPath . $kamar['foto']);
@@ -136,6 +144,9 @@ class KamarController
 
     public function detail(int $id): void
     {
+        // Semua role bisa lihat detail kamar
+        Auth::role(['admin', 'pemilik', 'penyewa']);
+
         $kamar = $this->kamar->find($id);
         if (!$kamar) {
             http_response_code(404);
