@@ -1,12 +1,16 @@
 <?php 
 require_once __DIR__ . '/../../src/Helpers/Security.php';
 use App\Helpers\Security;
+$role = $_SESSION['role'] ?? '';
+$isOwner = in_array($role, ['admin', 'pemilik']);
 ?>
 <?php require_once __DIR__ . '/../layouts/header.php'; ?>
 <div class="max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-4">
         <h1 class="text-2xl font-bold">Daftar Kamar</h1>
+        <?php if ($isOwner): ?>
         <a href="/kamar/create" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Tambah Kamar</a>
+        <?php endif; ?>
     </div>
 
     <form method="GET" class="mb-4 flex gap-2">
@@ -38,8 +42,10 @@ use App\Helpers\Security;
             <p class="text-gray-500 text-sm mt-1">Fasilitas: <?= Security::escapeHtml($row['fasilitas']) ?></p>
             <div class="mt-3 flex gap-2">
                 <a href="/kamar/detail/<?= $row['id'] ?>" class="text-blue-600 text-sm">Detail</a>
+                <?php if ($isOwner): ?>
                 <a href="/kamar/edit/<?= $row['id'] ?>" class="text-yellow-600 text-sm">Edit</a>
                 <a href="/kamar/delete/<?= $row['id'] ?>" class="text-red-600 text-sm" onclick="return confirm('Yakin hapus?')">Hapus</a>
+                <?php endif; ?>
             </div>
         </div>
         <?php endforeach; ?>
