@@ -2,7 +2,7 @@
 <div class="max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-4">
         <h1 class="text-2xl font-bold">Pengaduan</h1>
-        <?php if (Auth::getUserRole() === 'penyewa'): ?>
+        <?php if (($_SESSION['user_role'] ?? '') === 'penyewa'): ?>
         <a href="/pengaduan/create" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Ajukan Pengaduan</a>
         <?php endif; ?>
     </div>

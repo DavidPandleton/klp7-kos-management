@@ -28,7 +28,7 @@
     <?php endif; ?>
 
     <div class="mt-4 flex gap-2">
-        <?php if (Auth::getUserRole() !== 'penyewa'): ?>
+        <?php if (($_SESSION['user_role'] ?? '') !== 'penyewa'): ?>
             <?php if ($data['status'] == 'baru'): ?>
                 <a href="/pengaduan/proses/<?= $data['id'] ?>" class="bg-yellow-600 text-white px-4 py-2 rounded">Proses</a>
             <?php endif; ?>

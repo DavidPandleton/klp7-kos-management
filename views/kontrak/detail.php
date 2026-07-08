@@ -14,7 +14,7 @@
     <hr class="my-4">
     <h2 class="text-xl font-bold mb-3">Riwayat Pembayaran</h2>
 
-    <?php if (Auth::getUserRole() !== 'penyewa'): ?>
+    <?php if (($_SESSION['user_role'] ?? '') !== 'penyewa'): ?>
     <a href="/pembayaran/bayar/<?= $kontrak['id'] ?>" class="bg-green-600 text-white px-4 py-2 rounded inline-block mb-3">+ Catat Pembayaran</a>
     <?php endif; ?>
 

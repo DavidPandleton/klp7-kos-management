@@ -1,7 +1,7 @@
 <?php 
 require_once __DIR__ . '/../../src/Helpers/Security.php';
 use App\Helpers\Security;
-$role = $_SESSION['role'] ?? '';
+$role = $_SESSION['user_role'] ?? '';
 $isOwner = in_array($role, ['admin', 'pemilik']);
 ?>
 <?php require_once __DIR__ . '/../layouts/header.php'; ?>
