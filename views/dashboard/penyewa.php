@@ -7,7 +7,6 @@
         <p class="text-gray-600">Gunakan menu di atas untuk:</p>
         <ul class="list-disc list-inside text-gray-600 mt-2">
             <li>Lihat daftar kamar yang tersedia</li>
-            <li>Ajukan pembayaran sewa</li>
             <li>Buat pengaduan jika ada masalah</li>
         </ul>
     </div>
