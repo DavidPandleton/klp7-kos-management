@@ -1,3 +1,7 @@
+<?php 
+require_once __DIR__ . '/../../src/Helpers/Security.php';
+use App\Helpers\Security;
+?>
 <?php require_once __DIR__ . '/../layouts/header.php'; ?>
 <div class="max-w-7xl mx-auto">
     <h1 class="text-2xl font-bold mb-6">Dashboard Pemilik</h1>

@@ -76,6 +76,19 @@ INSERT INTO users (username, email, password, role) VALUES
 -- password for all seeds above: password
 
 INSERT INTO kamar (nomor_kamar, tipe, harga, kapasitas, fasilitas, status) VALUES
-('A01', 'Standar', 500000, 1, 'AC, WiFi', 'tersedia'),
+('A01', 'Standar', 500000, 1, 'AC, WiFi', 'terisi'),
 ('A02', 'VIP', 1000000, 2, 'AC, WiFi, Kamar Mandi Dalam', 'tersedia'),
 ('A03', 'Standar', 500000, 1, 'WiFi', 'tersedia');
+
+-- KONTRAK
+INSERT INTO kontrak (penyewa_id, kamar_id, tgl_mulai, tgl_akhir, status) VALUES
+(3, 1, '2026-06-01', '2026-12-31', 'aktif');
+
+-- PEMBAYARAN
+INSERT INTO pembayaran (kontrak_id, bulan, tahun, jumlah, status, tgl_bayar) VALUES
+(1, 6, 2026, 500000, 'lunas', '2026-06-01'),
+(1, 7, 2026, 500000, 'menunggu', NULL);
+
+-- PENGADUAN
+INSERT INTO pengaduan (penyewa_id, kamar_id, keluhan, status) VALUES
+(3, 1, 'AC di kamar A01 tidak dingin, sudah dilaporkan sejak kemarin tapi belum ada tindakan.', 'baru');
