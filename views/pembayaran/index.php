@@ -1,4 +1,7 @@
-<?php require_once __DIR__ . '/../layouts/header.php'; ?>
+<?php 
+require_once __DIR__ . '/../../src/Helpers/Security.php';
+use App\Helpers\Security;
+require_once __DIR__ . '/../layouts/header.php'; ?>
 <div class="max-w-7xl mx-auto">
     <h1 class="text-2xl font-bold mb-4">Daftar Pembayaran</h1>
 
@@ -51,3 +54,6 @@
     </table>
 </div>
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
+
+
+

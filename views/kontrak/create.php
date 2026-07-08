@@ -1,4 +1,7 @@
-<?php require_once __DIR__ . '/../layouts/header.php'; ?>
+<?php 
+require_once __DIR__ . '/../../src/Helpers/Security.php';
+use App\Helpers\Security;
+require_once __DIR__ . '/../layouts/header.php'; ?>
 <div class="max-w-2xl mx-auto bg-white rounded shadow p-6">
     <h1 class="text-2xl font-bold mb-4">Buat Kontrak Sewa</h1>
     <form method="POST">
@@ -33,3 +36,6 @@
     </form>
 </div>
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
+
+
+
