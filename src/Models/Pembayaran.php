@@ -76,9 +76,6 @@ class Pembayaran
 
         $stmt = $this->db->prepare("UPDATE pembayaran SET status = 'lunas', tgl_bayar = CURDATE(), denda = ? WHERE id = ?");
         $stmt->execute([$denda, $id]);
-
-        $stmt = $this->db->prepare("UPDATE pembayaran SET status = 'lunas' WHERE kontrak_id = ? AND bulan = ? AND tahun = ? AND status = 'belum_bayar'");
-        $stmt->execute([$bayar['kontrak_id'], $bayar['bulan'], $bayar['tahun']]);
     }
 
     public function tolak(int $id): void
@@ -101,6 +98,21 @@ class Pembayaran
         );
         $stmt->execute([$kontrakId]);
         return $stmt->fetchAll();
+    }
+
+    public function findUnpaidByKontrakBulan(int $kontrakId, int $bulan, int $tahun): array|false
+    {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM pembayaran WHERE kontrak_id = ? AND bulan = ? AND tahun = ? AND status = 'belum_bayar' LIMIT 1"
+        );
+        $stmt->execute([$kontrakId, $bulan, $tahun]);
+        return $stmt->fetch();
+    }
+
+    public function updateToMenunggu(int $id, string $jumlah, ?string $bukti): void
+    {
+        $stmt = $this->db->prepare("UPDATE pembayaran SET status = 'menunggu', jumlah = ?, bukti = ? WHERE id = ?");
+        $stmt->execute([$jumlah, $bukti, $id]);
     }
 
     public function getUnconfirmed(): array

@@ -75,20 +75,15 @@ class PembayaranController
             $bukti = $uploader->upload($_FILES['bukti'] ?? [], 'bayar');
 
             if ($v->passes()) {
-                $bulanDipilih = $_POST['bulan'] ?? null;
-                $tahunDipilih = $_POST['tahun'] ?? null;
-                $masihBelumBayar = array_filter($tagihanBelumBayar, function ($t) use ($bulanDipilih, $tahunDipilih) {
-                    return (int)$t['bulan'] === (int)$bulanDipilih && (int)$t['tahun'] === (int)$tahunDipilih;
-                });
-                if (empty($masihBelumBayar)) {
+                $bulanDipilih = (int) ($_POST['bulan'] ?? 0);
+                $tahunDipilih = (int) ($_POST['tahun'] ?? 0);
+                $tagihan = $this->pembayaran->findUnpaidByKontrakBulan($kontrakId, $bulanDipilih, $tahunDipilih);
+                if (!$tagihan) {
                     Session::setFlash('error', 'Periode yang dipilih sudah dibayar atau tidak valid.');
                     require_once __DIR__ . '/../../views/pembayaran/bayar.php';
                     return;
                 }
-                $_POST['kontrak_id'] = $kontrakId;
-                $_POST['bukti'] = $bukti;
-                $_POST['status'] = 'menunggu';
-                $this->pembayaran->create($_POST);
+                $this->pembayaran->updateToMenunggu($tagihan['id'], $_POST['jumlah'], $bukti);
                 Session::setFlash('success', 'Pembayaran diajukan, tunggu konfirmasi.');
                 header('Location: /kontrak/detail/' . $kontrakId);
                 exit;
