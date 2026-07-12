@@ -1,6 +1,7 @@
 <?php 
 require_once __DIR__ . '/../../src/Helpers/Security.php';
 use App\Helpers\Security;
+$bulanList = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 require_once __DIR__ . '/../layouts/header.php'; ?>
 <div class="max-w-7xl mx-auto">
     <h1 class="text-2xl font-bold mb-4">Daftar Pembayaran</h1>
@@ -13,8 +14,11 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             <option value="belum_bayar" <?= ($_GET['status'] ?? '') == 'belum_bayar' ? 'selected' : '' ?>>Belum Bayar</option>
         </select>
         <button type="submit" class="bg-gray-600 text-white px-4 py-2 rounded">Filter</button>
+        <a href="/pembayaran/index" class="text-gray-600 px-3 py-2">Reset</a>
     </form>
 
+    <?php if (count($data) > 0): ?>
+    <p class="text-sm text-gray-500 mb-2">Total: <?= count($data) ?> pembayaran</p>
     <table class="w-full bg-white rounded shadow">
         <thead>
             <tr class="bg-gray-200">
@@ -31,7 +35,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             <tr class="border-t">
                 <td class="p-2"><?= Security::escapeHtml($row['nama_penyewa']) ?></td>
                 <td class="p-2"><?= Security::escapeHtml($row['nomor_kamar']) ?></td>
-                <td class="p-2"><?= $row['bulan'] ?>/<?= $row['tahun'] ?></td>
+                <td class="p-2"><?= ($bulanList[$row['bulan']] ?? $row['bulan']) ?> <?= $row['tahun'] ?></td>
                 <td class="p-2">Rp <?= number_format($row['jumlah'], 0, ',', '.') ?></td>
                 <td class="p-2">
                     <span class="px-2 py-1 rounded text-white text-xs
@@ -52,6 +56,11 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php else: ?>
+    <div class="bg-white rounded shadow p-6 text-center text-gray-500">
+        Belum ada data pembayaran.
+    </div>
+    <?php endif; ?>
 </div>
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 
