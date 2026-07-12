@@ -47,13 +47,30 @@
     <?php
     $flash = \App\Helpers\Session::getFlash('success');
     if ($flash): ?>
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 mx-6 mt-4 rounded"><?= \App\Helpers\Security::escapeHtml($flash) ?></div>
+        <div data-auto-hide class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 mx-6 mt-4 rounded"><?= \App\Helpers\Security::escapeHtml($flash) ?></div>
     <?php endif; ?>
 
     <?php
     $flash = \App\Helpers\Session::getFlash('error');
     if ($flash): ?>
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mx-6 mt-4 rounded"><?= \App\Helpers\Security::escapeHtml($flash) ?></div>
+        <div data-auto-hide class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mx-6 mt-4 rounded"><?= \App\Helpers\Security::escapeHtml($flash) ?></div>
     <?php endif; ?>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(function () {
+        document.querySelectorAll('[data-auto-hide]').forEach(function (el) {
+            el.style.transition = 'opacity 0.5s';
+            el.style.opacity = '0';
+            setTimeout(function () { el.remove(); }, 500);
+        });
+    }, 3000);
+    document.querySelectorAll('form').forEach(function (f) {
+        f.addEventListener('submit', function () {
+            var btn = f.querySelector('button[type="submit"]');
+            if (btn) { btn.disabled = true; btn.classList.add('opacity-50', 'cursor-not-allowed'); }
+        });
+    });
+});
+</script>
     <main class="p-6">

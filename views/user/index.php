@@ -8,6 +8,8 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
         <a href="/user/create" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Tambah User</a>
     </div>
 
+    <?php if (count($data) > 0): ?>
+    <p class="text-sm text-gray-500 mb-2">Total: <?= count($data) ?> user</p>
     <table class="w-full bg-white rounded shadow">
         <thead>
             <tr class="bg-gray-200">
@@ -20,8 +22,8 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($data as $row): ?>
-            <tr class="border-t">
+            <?php foreach ($data as $i => $row): ?>
+            <tr class="border-t <?= $i % 2 == 0 ? 'bg-gray-50' : '' ?>">
                 <td class="p-2"><?= Security::escapeHtml($row['username']) ?></td>
                 <td class="p-2"><?= Security::escapeHtml($row['email']) ?></td>
                 <td class="p-2"><?= Security::escapeHtml($row['role']) ?></td>
@@ -37,6 +39,11 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php else: ?>
+    <div class="bg-white rounded shadow p-6 text-center text-gray-500">
+        Belum ada user.
+    </div>
+    <?php endif; ?>
 </div>
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 

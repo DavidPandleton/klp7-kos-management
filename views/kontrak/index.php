@@ -33,8 +33,8 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($data as $row): ?>
-            <tr class="border-t">
+            <?php foreach ($data as $i => $row): ?>
+            <tr class="border-t <?= $i % 2 == 0 ? 'bg-gray-50' : '' ?>">
                 <td class="p-2"><?= Security::escapeHtml($row['nama_penyewa']) ?></td>
                 <td class="p-2"><?= Security::escapeHtml($row['nomor_kamar']) ?></td>
                 <td class="p-2"><?= Security::escapeHtml(date('d/m/Y', strtotime($row['tgl_mulai']))) ?></td>

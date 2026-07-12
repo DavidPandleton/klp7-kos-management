@@ -34,8 +34,8 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($riwayatBayar as $b): ?>
-            <tr class="border-t">
+            <?php foreach ($riwayatBayar as $i => $b): ?>
+            <tr class="border-t <?= $i % 2 == 0 ? 'bg-gray-50' : '' ?>">
                 <td class="p-2"><?= $b['bulan'] ?>/<?= $b['tahun'] ?></td>
                 <td class="p-2">Rp <?= number_format($b['jumlah'], 0, ',', '.') ?></td>
                 <td class="p-2">Rp <?= number_format($b['denda'], 0, ',', '.') ?></td>
