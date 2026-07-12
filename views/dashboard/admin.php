@@ -30,6 +30,20 @@ use App\Helpers\Security;
         <p class="text-3xl font-bold text-green-600">Rp <?= number_format($data['pendapatan_bulan_ini'], 0, ',', '.') ?></p>
     </div>
 
+    <div class="bg-white rounded shadow p-4 mb-6">
+        <h2 class="font-bold text-lg mb-3">Pengajuan Kontrak Baru</h2>
+        <?php if (empty($data['kontrak_menunggu'])): ?>
+            <p class="text-gray-500">Tidak ada.</p>
+        <?php else: ?>
+            <?php foreach ($data['kontrak_menunggu'] as $k): ?>
+                <div class="border-b py-2 flex justify-between">
+                    <span><?= \App\Helpers\Security::escapeHtml($k['nama_penyewa']) ?> - <?= \App\Helpers\Security::escapeHtml($k['nomor_kamar']) ?></span>
+                    <a href="/kontrak/detail/<?= $k['id'] ?>" class="text-violet-600 text-sm">Review</a>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="bg-white rounded shadow p-4">
             <h2 class="font-bold text-lg mb-3">Pembayaran Menunggu</h2>

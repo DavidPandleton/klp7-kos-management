@@ -78,6 +78,11 @@ class PengaduanController
             require_once __DIR__ . '/../../views/errors/404.php';
             return;
         }
+        if (Auth::getUserRole() === 'penyewa' && (int) $data['penyewa_id'] !== Auth::getUserId()) {
+            http_response_code(403);
+            require_once __DIR__ . '/../../views/errors/403.php';
+            return;
+        }
         require_once __DIR__ . '/../../views/pengaduan/detail.php';
     }
 

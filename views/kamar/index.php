@@ -3,6 +3,8 @@ require_once __DIR__ . '/../../src/Helpers/Security.php';
 use App\Helpers\Security;
 $role = $_SESSION['user_role'] ?? '';
 $isOwner = in_array($role, ['admin', 'pemilik']);
+$filter_role = $role === 'penyewa' ? ' AND status = \'tersedia\'' : '';
+$data = isset($data) ? $data : [];
 ?>
 <?php require_once __DIR__ . '/../layouts/header.php'; ?>
 <div class="max-w-7xl mx-auto">

@@ -17,7 +17,10 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
     <hr class="my-4">
     <h2 class="text-xl font-bold mb-3">Riwayat Pembayaran</h2>
 
-    <?php if (($_SESSION['user_role'] ?? '') !== 'penyewa'): ?>
+    <?php $role = $_SESSION['user_role'] ?? ''; ?>
+    <?php if ($role === 'penyewa' && $kontrak['status'] === 'aktif'): ?>
+    <a href="/pembayaran/bayar/<?= $kontrak['id'] ?>" class="bg-green-600 text-white px-4 py-2 rounded inline-block mb-3">Bayar Sewa</a>
+    <?php elseif ($role !== 'penyewa'): ?>
     <a href="/pembayaran/bayar/<?= $kontrak['id'] ?>" class="bg-green-600 text-white px-4 py-2 rounded inline-block mb-3">+ Catat Pembayaran</a>
     <?php endif; ?>
 
@@ -56,8 +59,19 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
     <p class="text-gray-500 text-sm">Belum ada riwayat pembayaran untuk kontrak ini.</p>
     <?php endif; ?>
 
-    <div class="mt-4">
-        <a href="/kontrak/index" class="text-gray-600">Kembali</a>
+    <div class="mt-4 flex gap-2">
+        <?php $role = $_SESSION['user_role'] ?? ''; ?>
+        <?php if ($role !== 'penyewa'): ?>
+            <?php if ($kontrak['status'] === 'menunggu'): ?>
+                <a href="/kontrak/setujui/<?= $kontrak['id'] ?>" class="bg-green-600 text-white px-4 py-2 rounded" onclick="return confirm('Setujui kontrak ini?')">Setujui</a>
+                <a href="/kontrak/batalkan/<?= $kontrak['id'] ?>" class="bg-red-600 text-white px-4 py-2 rounded" onclick="return confirm('Tolak kontrak ini?')">Tolak</a>
+            <?php endif; ?>
+            <?php if ($kontrak['status'] === 'aktif'): ?>
+                <a href="/kontrak/selesaikan/<?= $kontrak['id'] ?>" class="bg-yellow-600 text-white px-4 py-2 rounded" onclick="return confirm('Selesaikan kontrak ini?')">Selesaikan</a>
+                <a href="/kontrak/batalkan/<?= $kontrak['id'] ?>" class="bg-red-600 text-white px-4 py-2 rounded" onclick="return confirm('Batalkan kontrak?')">Batalkan</a>
+            <?php endif; ?>
+        <?php endif; ?>
+        <a href="/kontrak/index" class="text-gray-600 px-4 py-2">Kembali</a>
     </div>
 </div>
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

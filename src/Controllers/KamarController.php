@@ -26,14 +26,15 @@ class KamarController
 
     public function index(): void
     {
-        // Semua role bisa lihat daftar kamar
         Auth::role(['admin', 'pemilik', 'penyewa']);
 
         $status = $_GET['status'] ?? '';
         $filter = '';
         $params = [];
 
-        if (!empty($status)) {
+        if (Auth::getUserRole() === 'penyewa') {
+            $filter .= " AND status = 'tersedia'";
+        } elseif (!empty($status)) {
             $filter .= " AND status = ?";
             $params[] = $status;
         }

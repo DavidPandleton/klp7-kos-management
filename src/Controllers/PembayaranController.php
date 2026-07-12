@@ -47,6 +47,17 @@ class PembayaranController
             return;
         }
 
+        $role = Auth::getUserRole();
+        if ($role === 'penyewa') {
+            if ($kontrak['status'] !== 'aktif' || (int) $kontrak['penyewa_id'] !== Auth::getUserId()) {
+                http_response_code(403);
+                require_once __DIR__ . '/../../views/errors/403.php';
+                return;
+            }
+        } else {
+            Auth::role(['admin', 'pemilik']);
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
                 Session::setFlash('error', 'Token tidak valid.');
@@ -65,8 +76,8 @@ class PembayaranController
                 $_POST['kontrak_id'] = $kontrakId;
                 $_POST['bukti'] = $bukti;
                 $_POST['status'] = 'menunggu';
-                $_POST['bulan'] = date('n');
-                $_POST['tahun'] = date('Y');
+                $_POST['bulan'] = (int) date('n', strtotime($kontrak['tgl_mulai']));
+                $_POST['tahun'] = (int) date('Y', strtotime($kontrak['tgl_mulai']));
                 $this->pembayaran->create($_POST);
                 Session::setFlash('success', 'Pembayaran diajukan, tunggu konfirmasi.');
                 header('Location: /kontrak/detail/' . $kontrakId);
