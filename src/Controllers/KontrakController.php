@@ -146,6 +146,11 @@ class KontrakController
     public function selesaikan(int $id): void
     {
         Auth::role(['admin', 'pemilik']);
+        if ($this->kontrak->hasUnpaidPayments($id)) {
+            Session::setFlash('error', 'Kontrak tidak bisa diselesaikan karena masih ada tagihan belum dibayar.');
+            header('Location: /kontrak/detail/' . $id);
+            exit;
+        }
         $this->kontrak->updateStatus($id, 'selesai');
         Session::setFlash('success', 'Kontrak diselesaikan.');
         header('Location: /kontrak/index');

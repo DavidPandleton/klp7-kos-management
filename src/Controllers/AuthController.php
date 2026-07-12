@@ -86,6 +86,8 @@ class AuthController
                 $userModel = new User();
                 if ($userModel->findByEmail($_POST['email'])) {
                     Session::setFlash('error', 'Email sudah terdaftar.');
+                } elseif ($userModel->findByUsername($_POST['username'])) {
+                    Session::setFlash('error', 'Username sudah digunakan.');
                 } else {
                     $_POST['role'] = 'penyewa';
                     $userModel->create($_POST);

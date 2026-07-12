@@ -101,6 +101,27 @@ class Kontrak
         return (int) $this->db->query("SELECT COUNT(*) FROM kontrak WHERE status = 'aktif'")->fetchColumn();
     }
 
+    public function hasActiveByKamar(int $kamarId): bool
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM kontrak WHERE kamar_id = ? AND status = 'aktif'");
+        $stmt->execute([$kamarId]);
+        return (int) $stmt->fetchColumn() > 0;
+    }
+
+    public function hasActiveByPenyewaId(int $penyewaId): bool
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM kontrak WHERE penyewa_id = ? AND status = 'aktif'");
+        $stmt->execute([$penyewaId]);
+        return (int) $stmt->fetchColumn() > 0;
+    }
+
+    public function hasUnpaidPayments(int $kontrakId): bool
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM pembayaran WHERE kontrak_id = ? AND status = 'belum_bayar'");
+        $stmt->execute([$kontrakId]);
+        return (int) $stmt->fetchColumn() > 0;
+    }
+
     public function getMenunggu(): array
     {
         $sql = "SELECT k.*, u.username as nama_penyewa, km.nomor_kamar

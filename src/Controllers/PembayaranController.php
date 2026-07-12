@@ -75,6 +75,16 @@ class PembayaranController
             $bukti = $uploader->upload($_FILES['bukti'] ?? [], 'bayar');
 
             if ($v->passes()) {
+                $bulanDipilih = $_POST['bulan'] ?? null;
+                $tahunDipilih = $_POST['tahun'] ?? null;
+                $masihBelumBayar = array_filter($tagihanBelumBayar, function ($t) use ($bulanDipilih, $tahunDipilih) {
+                    return (int)$t['bulan'] === (int)$bulanDipilih && (int)$t['tahun'] === (int)$tahunDipilih;
+                });
+                if (empty($masihBelumBayar)) {
+                    Session::setFlash('error', 'Periode yang dipilih sudah dibayar atau tidak valid.');
+                    require_once __DIR__ . '/../../views/pembayaran/bayar.php';
+                    return;
+                }
                 $_POST['kontrak_id'] = $kontrakId;
                 $_POST['bukti'] = $bukti;
                 $_POST['status'] = 'menunggu';

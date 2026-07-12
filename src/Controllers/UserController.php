@@ -7,6 +7,7 @@ use App\Middleware\Auth;
 use App\Helpers\Session;
 use App\Helpers\Security;
 use App\Helpers\Validator;
+use App\Models\Kontrak;
 
 class UserController
 {
@@ -44,6 +45,8 @@ class UserController
             if ($v->passes()) {
                 if ($this->user->findByEmail($_POST['email'])) {
                     Session::setFlash('error', 'Email sudah terdaftar.');
+                } elseif ($this->user->findByUsername($_POST['username'])) {
+                    Session::setFlash('error', 'Username sudah digunakan.');
                 } else {
                     $this->user->create($_POST);
                     Session::setFlash('success', 'User berhasil ditambahkan.');
@@ -83,6 +86,11 @@ class UserController
             }
 
             if ($v->passes()) {
+                if ($id === Auth::getUserId() && isset($_POST['role']) && $_POST['role'] !== Auth::getUserRole()) {
+                    Session::setFlash('error', 'Tidak bisa mengubah role akun sendiri.');
+                    require_once __DIR__ . '/../../views/user/edit.php';
+                    return;
+                }
                 $this->user->update($id, $_POST);
                 Session::setFlash('success', 'User berhasil diupdate.');
                 header('Location: /user/index');
@@ -102,6 +110,14 @@ class UserController
             header('Location: /user/index');
             exit;
         }
+
+        $kontrakModel = new Kontrak();
+        if ($kontrakModel->hasActiveByPenyewaId($id)) {
+            Session::setFlash('error', 'User tidak bisa dihapus karena masih memiliki kontrak aktif.');
+            header('Location: /user/index');
+            exit;
+        }
+
         $this->user->delete($id);
         Session::setFlash('success', 'User berhasil dihapus.');
         header('Location: /user/index');
