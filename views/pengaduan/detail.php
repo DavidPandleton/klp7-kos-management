@@ -5,7 +5,7 @@
         <tr><td class="font-semibold py-2 w-40">Penyewa</td><td><?= Security::escapeHtml($data['nama_penyewa']) ?></td></tr>
         <tr><td class="font-semibold py-2">Kamar</td><td><?= Security::escapeHtml($data['nomor_kamar'] ?? '-') ?></td></tr>
         <tr><td class="font-semibold py-2">Status</td><td><?= Security::escapeHtml($data['status']) ?></td></tr>
-        <tr><td class="font-semibold py-2">Tanggal</td><td><?= Security::escapeHtml($data['created_at']) ?></td></tr>
+        <tr><td class="font-semibold py-2">Tanggal</td><td><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($data['created_at']))) ?></td></tr>
     </table>
 
     <div class="bg-gray-50 p-4 rounded mb-4">
@@ -16,7 +16,9 @@
     <?php if ($data['foto']): ?>
         <div class="mb-4">
             <h3 class="font-semibold mb-2">Foto:</h3>
-            <img src="/uploads/pengaduan/<?= Security::escapeHtml($data['foto']) ?>" class="max-w-md rounded">
+            <a href="/uploads/pengaduan/<?= Security::escapeHtml($data['foto']) ?>" target="_blank">
+                <img src="/uploads/pengaduan/<?= Security::escapeHtml($data['foto']) ?>" class="max-w-md rounded border hover:opacity-90 transition">
+            </a>
         </div>
     <?php endif; ?>
 
