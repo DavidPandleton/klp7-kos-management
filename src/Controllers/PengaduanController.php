@@ -7,6 +7,7 @@ use App\Middleware\Auth;
 use App\Helpers\Session;
 use App\Helpers\Security;
 use App\Helpers\Validator;
+use App\Helpers\FileUploader;
 
 class PengaduanController
 {
@@ -51,15 +52,8 @@ class PengaduanController
             $v = new Validator();
             $v->required('keluhan', $_POST['keluhan'], 'Keluhan');
 
-            $foto = null;
-            if (!empty($_FILES['foto']['name'])) {
-                $v->file('foto', $_FILES['foto'], ['image/jpeg', 'image/png', 'image/jpg'], 2097152, 'Foto');
-                if ($v->passes()) {
-                    $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-                    $foto = 'aduan_' . time() . '.' . $ext;
-                    move_uploaded_file($_FILES['foto']['tmp_name'], __DIR__ . '/../../uploads/pengaduan/' . $foto);
-                }
-            }
+            $uploader = new FileUploader(__DIR__ . '/../../uploads/pengaduan', ['image/jpeg', 'image/png', 'image/jpg']);
+            $foto = $uploader->upload($_FILES['foto'] ?? [], 'aduan');
 
             if ($v->passes()) {
                 $_POST['penyewa_id'] = Auth::getUserId();
