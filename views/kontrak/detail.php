@@ -7,7 +7,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
     <table class="w-full mb-6">
         <tr><td class="font-semibold py-2 w-40">Penyewa</td><td><?= Security::escapeHtml($kontrak['nama_penyewa']) ?></td></tr>
         <tr><td class="font-semibold py-2">Email</td><td><?= Security::escapeHtml($kontrak['email']) ?></td></tr>
-        <tr><td class="font-semibold py-2">No Telepon</td><td><?= Security::escapeHtml($kontrak['no_telepon']) ?></td></tr>
+        <tr><td class="font-semibold py-2">No Telepon</td><td><?= Security::escapeHtml($kontrak['no_telepon'] ?? '-') ?></td></tr>
         <tr><td class="font-semibold py-2">Kamar</td><td><?= Security::escapeHtml($kontrak['nomor_kamar']) ?> - <?= Security::escapeHtml($kontrak['tipe']) ?></td></tr>
         <tr><td class="font-semibold py-2">Harga Sewa</td><td>Rp <?= number_format($kontrak['harga'], 0, ',', '.') ?> /bln</td></tr>
         <tr><td class="font-semibold py-2">Periode</td><td><?= Security::escapeHtml(date('d/m/Y', strtotime($kontrak['tgl_mulai']))) ?> s/d <?= Security::escapeHtml(date('d/m/Y', strtotime($kontrak['tgl_akhir']))) ?></td></tr>
