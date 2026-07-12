@@ -10,10 +10,6 @@
 
 ### 2. Cara Integrasi
 ```php
-// Instalasi via Composer
-// composer require phpmailer/phpmailer
-
-// Contoh penggunaan di Mailer.php
 $mail = new PHPMailer(true);
 $mail->isSMTP();
 $mail->Host = 'smtp.gmail.com';
@@ -79,15 +75,11 @@ PHPMailer digunakan pada modul Notifikasi (`NotifikasiController`) untuk mengiri
 
 ### 2. Cara Integrasi
 ```php
-// Instalasi via Composer
-// composer require fpdf/fpdf
-
-// Contoh penggunaan di LaporanController.php
 $pdf = new FPDF('P', 'mm', 'A4');
 $pdf->AddPage();
 $pdf->SetFont('Helvetica', 'B', 16);
 $pdf->Cell(0, 10, 'Judul Laporan', 0, 1, 'C');
-// ... isi tabel ...
+$pdf->Cell(190, 7, 'Isi tabel', 1, 1);
 $pdf->Output('I', 'laporan.pdf');
 ```
 
@@ -105,49 +97,38 @@ FPDF digunakan pada modul Laporan (`LaporanController`) untuk:
 
 ### 4. Keamanan
 **Risiko teridentifikasi:**
-- **Tidak ada sanitasi output** — data dari database langsung dicetak ke PDF. Jika ada XSS di data, PDF tetap aman karena FPDF bukan HTML parser.
-- **Tidak enkripsi** — FPDF tidak mendukung PDF encryption built-in (perlu library tambahan).
+- **Tidak ada sanitasi output** — data dari database langsung dicetak ke PDF.
+- **Tidak ada enkripsi** — FPDF tidak mendukung PDF encryption built-in (perlu library tambahan).
 - **File path injection** pada metode `Output()` — parameter filename harus divalidasi.
-- **No input validation** — data `$_GET['bulan']` dan `$_GET['tahun']` langsung dipakai tanpa validasi numerik.
 
 **Mitigasi:**
-- Gunakan `htmlspecialchars()` untuk data yang ditampilkan di PDF (sudah diterapkan via `Security::escapeHtml()` di view, tapi di controller PDF belum).
+- Gunakan `htmlspecialchars()` untuk data yang ditampilkan di PDF.
 - Validasi parameter `bulan` dan `tahun` dengan `ctype_digit()` sebelum digunakan.
-- Untuk PDF encryption, bisa tambahkan library seperti `setasign/fpdi` atau beralih ke Dompdf/TCPDF.
+- Untuk PDF encryption, bisa tambahkan library seperti `setasign/fpdi`.
 
 ### 5. Kompatibilitas
 | Aspek | Keterangan |
 |-------|-----------|
 | PHP version | PHP 5.1+ (cocok dengan proyek) |
 | Ekstensi | Minimal, hanya `zlib` untuk kompresi |
-| Encoding | Mendukung UTF-8 via `UTF-8 to ISO-8859-1` konversi |
+| Encoding | Mendukung UTF-8 via konversi |
 | Library lain | Tidak konflik dengan PHPMailer atau kode native |
 
 ### 6. Batasan
 - **Tidak mendukung UTF-8 penuh** — karakter non-Latin perlu ekstensi tambahan.
-- **HTML ke PDF tidak didukung** — semua layout harus dikode manual via `Cell()`, `MultiCell()`, dll.
+- **HTML ke PDF tidak didukung** — semua layout harus dikode manual.
 - **Tidak ada CSS styling** — styling dilakukan via method PHP.
-- **Tidak ada encryption/password protection** — untuk kebutuhan yang lebih advance.
+- **Tidak ada encryption/password protection.**
 
 ---
 
-## C. Alternatif & Saran
+## C. Alternatif
 
-### Alternatif PHPMailer
-| Library | Kelebihan | Kekurangan |
-|---------|-----------|------------|
-| **SwiftMailer** | Lebih modern, MIME support lebih baik | Sudah di-deprecate (diganti Symfony Mailer) |
-| **Symfony Mailer** | Komponen Symfony, fitur lengkap | Butuh lebih banyak boilerplate |
-| **Native `mail()`** | Tanpa library | Tidak SMTP, sering di-block hosting |
-
-### Alternatif FPDF
-| Library | Kelebihan | Kekurangan |
-|---------|-----------|------------|
-| **Dompdf** | Render HTML+CSS ke PDF | Berat, lambat untuk dokumen besar |
-| **TCPDF** | UTF-8 support, encryption, lebih fitur | Ukuran library lebih besar |
-| **mpdf** | HTML+CSS, UTF-8 | Memory usage tinggi |
-
-**Rekomendasi:** Jika aplikasi dikembangkan lebih lanjut, migrasi ke **TCPDF** disarankan untuk UTF-8 support dan encryption. Sementara untuk kebutuhan saat ini, FPDF sudah cukup memadai.
+| Kategori | Library | Kelebihan | Kekurangan |
+|----------|---------|-----------|------------|
+| Email | **Symfony Mailer** | Modern, fitur lengkap | Butuh lebih banyak boilerplate |
+| PDF | **TCPDF** | UTF-8, encryption, lebih fitur | Ukuran library lebih besar |
+| PDF | **Dompdf** | Render HTML+CSS | Berat untuk dokumen besar |
 
 ---
 
