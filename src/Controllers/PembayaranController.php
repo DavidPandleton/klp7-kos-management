@@ -47,6 +47,12 @@ class PembayaranController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                require_once __DIR__ . '/../../views/pembayaran/bayar.php';
+                return;
+            }
+
             $v = new Validator();
             $v->required('jumlah', $_POST['jumlah'], 'Jumlah bayar');
             $v->numeric('jumlah', $_POST['jumlah'], 'Jumlah bayar');

@@ -8,6 +8,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
        Periode: <?= date('F Y') ?></p>
 
     <form method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCsrfToken() ?>">
         <div class="mb-3">
             <label class="block text-gray-700">Jumlah Bayar</label>
             <input type="number" name="jumlah" value="<?= Security::escapeHtml($kontrak['harga']) ?>" required class="w-full border rounded px-3 py-2">

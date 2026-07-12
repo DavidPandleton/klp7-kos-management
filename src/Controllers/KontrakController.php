@@ -44,6 +44,12 @@ class KontrakController
         $kamarList = $kamarModel->getAll(" AND status = 'tersedia'", []);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!\App\Helpers\Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                require_once __DIR__ . '/../../views/kontrak/create.php';
+                return;
+            }
+
             $v = new Validator();
             $v->required('penyewa_id', $_POST['penyewa_id'], 'Penyewa');
             $v->required('kamar_id', $_POST['kamar_id'], 'Kamar');
