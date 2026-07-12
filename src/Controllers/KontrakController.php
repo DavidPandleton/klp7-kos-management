@@ -82,7 +82,7 @@ class KontrakController
             if ($v->passes()) {
                 $this->kontrak->create($_POST);
                 Session::setFlash('success', 'Kontrak berhasil dibuat.');
-                header('Location: /kontrak/index');
+                header('Location: ' . ($role === 'penyewa' ? '/kamar/index' : '/kontrak/index'));
                 exit;
             }
 
