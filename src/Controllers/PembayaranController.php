@@ -8,6 +8,7 @@ use App\Middleware\Auth;
 use App\Helpers\Session;
 use App\Helpers\Security;
 use App\Helpers\Validator;
+use App\Helpers\FileUploader;
 
 class PembayaranController
 {
@@ -57,15 +58,8 @@ class PembayaranController
             $v->required('jumlah', $_POST['jumlah'], 'Jumlah bayar');
             $v->numeric('jumlah', $_POST['jumlah'], 'Jumlah bayar');
 
-            $bukti = null;
-            if (!empty($_FILES['bukti']['name'])) {
-                $v->file('bukti', $_FILES['bukti'], ['image/jpeg', 'image/png', 'application/pdf'], 2097152, 'Bukti transfer');
-                if ($v->passes()) {
-                    $ext = pathinfo($_FILES['bukti']['name'], PATHINFO_EXTENSION);
-                    $bukti = 'bayar_' . time() . '.' . $ext;
-                    move_uploaded_file($_FILES['bukti']['tmp_name'], __DIR__ . '/../../uploads/bukti_bayar/' . $bukti);
-                }
-            }
+            $uploader = new FileUploader(__DIR__ . '/../../uploads/bukti_bayar', ['image/jpeg', 'image/png', 'application/pdf']);
+            $bukti = $uploader->upload($_FILES['bukti'] ?? [], 'bayar');
 
             if ($v->passes()) {
                 $_POST['kontrak_id'] = $kontrakId;
@@ -98,8 +92,9 @@ class PembayaranController
     {
         Auth::role(['admin', 'pemilik']);
         $bayar = $this->pembayaran->find($id);
-        if ($bayar && $bayar['bukti'] && file_exists(__DIR__ . '/../../uploads/bukti_bayar/' . $bayar['bukti'])) {
-            unlink(__DIR__ . '/../../uploads/bukti_bayar/' . $bayar['bukti']);
+        if ($bayar) {
+            $uploader = new FileUploader(__DIR__ . '/../../uploads/bukti_bayar');
+            $uploader->delete($bayar['bukti']);
         }
         $this->pembayaran->tolak($id);
         Session::setFlash('error', 'Pembayaran ditolak.');
