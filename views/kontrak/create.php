@@ -32,7 +32,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             <label class="block text-gray-700">Tanggal Akhir</label>
             <input type="date" name="tgl_akhir" required class="w-full border rounded px-3 py-2">
         </div>
-        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Buat Kontrak</button>
+        <button type="submit" class="bg-violet-600 text-white px-6 py-2 rounded hover:bg-violet-700">Buat Kontrak</button>
         <a href="/kontrak/index" class="ml-2 text-gray-600">Batal</a>
     </form>
 </div>

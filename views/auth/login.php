@@ -32,10 +32,10 @@
                 <label class="block text-gray-700 mb-1">Password</label>
                 <input type="password" name="password" required class="w-full border rounded px-3 py-2">
             </div>
-            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Login</button>
+            <button type="submit" class="w-full bg-violet-600 text-white py-2 rounded hover:bg-violet-700">Login</button>
         </form>
         <p class="text-center mt-4 text-gray-600">
-            Belum punya akun? <a href="/auth/register" class="text-blue-600 hover:underline">Daftar</a>
+            Belum punya akun? <a href="/auth/register" class="text-violet-600 hover:underline">Daftar</a>
         </p>
     </div>
 </body>

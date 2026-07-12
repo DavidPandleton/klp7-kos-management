@@ -5,14 +5,14 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
 <div class="max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-4">
         <h1 class="text-2xl font-bold">Manajemen User</h1>
-        <a href="/user/create" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Tambah User</a>
+        <a href="/user/create" class="bg-violet-600 text-white px-4 py-2 rounded hover:bg-violet-700">+ Tambah User</a>
     </div>
 
     <?php if (count($data) > 0): ?>
     <p class="text-sm text-gray-500 mb-2">Total: <?= count($data) ?> user</p>
     <table class="w-full bg-white rounded shadow">
         <thead>
-            <tr class="bg-gray-200">
+            <tr class="bg-violet-100">
                 <th class="p-2 text-left">Username</th>
                 <th class="p-2 text-left">Email</th>
                 <th class="p-2 text-left">Role</th>

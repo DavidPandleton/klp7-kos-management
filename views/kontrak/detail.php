@@ -24,7 +24,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
     <?php if (count($riwayatBayar) > 0): ?>
     <table class="w-full bg-gray-50 rounded">
         <thead>
-            <tr class="bg-gray-200">
+            <tr class="bg-violet-100">
                 <th class="p-2">Periode</th>
                 <th class="p-2">Jumlah</th>
                 <th class="p-2">Denda</th>
@@ -43,7 +43,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
                 <td class="p-2"><?= $b['tgl_bayar'] ? Security::escapeHtml(date('d/m/Y', strtotime($b['tgl_bayar']))) : '-' ?></td>
                 <td class="p-2">
                     <?php if ($b['bukti']): ?>
-                        <a href="/uploads/bukti_bayar/<?= Security::escapeHtml($b['bukti']) ?>" target="_blank" class="text-blue-600">Lihat</a>
+                        <a href="/uploads/bukti_bayar/<?= Security::escapeHtml($b['bukti']) ?>" target="_blank" class="text-violet-600">Lihat</a>
                     <?php else: ?>
                         -
                     <?php endif; ?>

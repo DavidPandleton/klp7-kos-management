@@ -5,7 +5,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
 <div class="max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-4">
         <h1 class="text-2xl font-bold">Daftar Kontrak Sewa</h1>
-        <a href="/kontrak/create" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Buat Kontrak</a>
+        <a href="/kontrak/create" class="bg-violet-600 text-white px-4 py-2 rounded hover:bg-violet-700">+ Buat Kontrak</a>
     </div>
 
     <form method="GET" class="mb-4 flex gap-2">
@@ -23,7 +23,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
     <p class="text-sm text-gray-500 mb-2">Total: <?= count($data) ?> kontrak</p>
     <table class="w-full bg-white rounded shadow">
         <thead>
-            <tr class="bg-gray-200">
+            <tr class="bg-violet-100">
                 <th class="p-2 text-left">Penyewa</th>
                 <th class="p-2 text-left">Kamar</th>
                 <th class="p-2 text-left">Tgl Mulai</th>
@@ -46,7 +46,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
                     </span>
                 </td>
                 <td class="p-2 flex gap-2">
-                    <a href="/kontrak/detail/<?= $row['id'] ?>" class="text-blue-600 text-sm">Detail</a>
+                    <a href="/kontrak/detail/<?= $row['id'] ?>" class="text-violet-600 text-sm">Detail</a>
                     <?php if ($row['status'] == 'aktif'): ?>
                         <a href="/kontrak/selesaikan/<?= $row['id'] ?>" class="text-green-600 text-sm" onclick="return confirm('Selesaikan kontrak?')">Selesaikan</a>
                         <a href="/kontrak/batalkan/<?= $row['id'] ?>" class="text-red-600 text-sm" onclick="return confirm('Batalkan kontrak?')">Batalkan</a>

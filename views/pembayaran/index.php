@@ -21,7 +21,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
     <p class="text-sm text-gray-500 mb-2">Total: <?= count($data) ?> pembayaran</p>
     <table class="w-full bg-white rounded shadow">
         <thead>
-            <tr class="bg-gray-200">
+            <tr class="bg-violet-100">
                 <th class="p-2 text-left">Penyewa</th>
                 <th class="p-2 text-left">Kamar</th>
                 <th class="p-2 text-left">Periode</th>
@@ -49,7 +49,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
                         <a href="/pembayaran/tolak/<?= $row['id'] ?>" class="text-red-600 text-sm" onclick="return confirm('Tolak pembayaran?')">Tolak</a>
                     <?php endif; ?>
                     <?php if ($row['bukti']): ?>
-                        <a href="/uploads/bukti_bayar/<?= Security::escapeHtml($row['bukti']) ?>" target="_blank" class="text-blue-600 text-sm">Bukti</a>
+                        <a href="/uploads/bukti_bayar/<?= Security::escapeHtml($row['bukti']) ?>" target="_blank" class="text-violet-600 text-sm">Bukti</a>
                     <?php endif; ?>
                 </td>
             </tr>

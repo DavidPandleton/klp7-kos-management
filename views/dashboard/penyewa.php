@@ -13,7 +13,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="/kamar/index" class="bg-white rounded shadow p-6 hover:shadow-md transition">
-            <h3 class="font-bold text-lg text-blue-600">Kamar</h3>
+            <h3 class="font-bold text-lg text-violet-600">Kamar</h3>
             <p class="text-gray-500 text-sm">Lihat kamar tersedia</p>
         </a>
         <a href="/pengaduan/create" class="bg-white rounded shadow p-6 hover:shadow-md transition">

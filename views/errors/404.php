@@ -11,7 +11,7 @@
         <h1 class="text-6xl font-bold text-gray-400">404</h1>
         <p class="text-xl mt-2">Halaman Tidak Ditemukan</p>
         <p class="text-gray-500 mt-1">Halaman yang Anda cari tidak tersedia.</p>
-        <a href="/dashboard" class="mt-4 inline-block text-blue-600 hover:underline">Kembali ke Dashboard</a>
+        <a href="/dashboard" class="mt-4 inline-block text-violet-600 hover:underline">Kembali ke Dashboard</a>
     </div>
 </body>
 </html>

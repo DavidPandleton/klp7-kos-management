@@ -11,7 +11,7 @@
         <h1 class="text-6xl font-bold text-gray-400">500</h1>
         <p class="text-xl mt-2">Kesalahan Server</p>
         <p class="text-gray-500 mt-1">Terjadi kesalahan pada server. Silakan coba lagi.</p>
-        <a href="/dashboard" class="mt-4 inline-block text-blue-600 hover:underline">Kembali ke Dashboard</a>
+        <a href="/dashboard" class="mt-4 inline-block text-violet-600 hover:underline">Kembali ke Dashboard</a>
     </div>
 </body>
 </html>

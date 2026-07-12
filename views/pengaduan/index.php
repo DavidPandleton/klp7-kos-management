@@ -6,7 +6,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
     <div class="flex justify-between items-center mb-4">
         <h1 class="text-2xl font-bold">Pengaduan</h1>
         <?php if (($_SESSION['user_role'] ?? '') === 'penyewa'): ?>
-        <a href="/pengaduan/create" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Ajukan Pengaduan</a>
+        <a href="/pengaduan/create" class="bg-violet-600 text-white px-4 py-2 rounded hover:bg-violet-700">+ Ajukan Pengaduan</a>
         <?php endif; ?>
     </div>
 
@@ -25,7 +25,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
     <p class="text-sm text-gray-500 mb-2">Total: <?= count($data) ?> pengaduan</p>
     <table class="w-full bg-white rounded shadow">
         <thead>
-            <tr class="bg-gray-200">
+            <tr class="bg-violet-100">
                 <th class="p-2 text-left">Penyewa</th>
                 <th class="p-2 text-left">Kamar</th>
                 <th class="p-2 text-left">Keluhan</th>
@@ -48,7 +48,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
                 </td>
                 <td class="p-2"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($row['created_at']))) ?></td>
                 <td class="p-2">
-                    <a href="/pengaduan/detail/<?= $row['id'] ?>" class="text-blue-600 text-sm">Detail</a>
+                    <a href="/pengaduan/detail/<?= $row['id'] ?>" class="text-violet-600 text-sm">Detail</a>
                 </td>
             </tr>
             <?php endforeach; ?>

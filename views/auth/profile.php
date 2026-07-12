@@ -26,7 +26,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             <label class="block text-gray-700">Password Baru (kosongkan jika tidak diganti)</label>
             <input type="password" name="password" minlength="6" class="w-full border rounded px-3 py-2">
         </div>
-        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Simpan</button>
+        <button type="submit" class="bg-violet-600 text-white px-6 py-2 rounded hover:bg-violet-700">Simpan</button>
     </form>
 </div>
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
