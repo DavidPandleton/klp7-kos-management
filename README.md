@@ -90,9 +90,9 @@ Buka: `http://localhost:8000`
 
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | admin@kos.com | password |
-| Pemilik | pemilik@kos.com | password |
-| Penyewa | penyewa@kos.com | password |
+| **Admin** | admin@kos.com | password |
+| **Pemilik** | pemilik@kos.com | password |
+| **Penyewa** | penyewa@kos.com | password |
 
 ---
 

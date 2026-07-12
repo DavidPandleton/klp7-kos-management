@@ -8,6 +8,7 @@
     </div>
 
     <form method="POST" action="/notifikasi/kirim">
+        <input type="hidden" name="csrf_token" value="<?= \App\Helpers\Security::generateCsrfToken() ?>">
         <div class="mb-3">
             <label class="block text-gray-700">Penerima (Penyewa)</label>
             <select name="penyewa_id" required class="w-full border rounded px-3 py-2">

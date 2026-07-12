@@ -23,6 +23,7 @@
         <?php endif; ?>
 
         <form method="POST">
+            <input type="hidden" name="csrf_token" value="<?= \App\Helpers\Security::generateCsrfToken() ?>">
             <div class="mb-4">
                 <label class="block text-gray-700 mb-1">Email</label>
                 <input type="email" name="email" required class="w-full border rounded px-3 py-2">

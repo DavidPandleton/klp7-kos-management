@@ -31,6 +31,12 @@ class NotifikasiController
             exit;
         }
 
+        if (!\App\Helpers\Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+            Session::setFlash('error', 'Token tidak valid.');
+            header('Location: /notifikasi/index');
+            exit;
+        }
+
         $userId = (int) ($_POST['penyewa_id'] ?? 0);
         $jenis = $_POST['jenis'] ?? '';
         $pesan = $_POST['pesan'] ?? '';

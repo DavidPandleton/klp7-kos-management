@@ -26,7 +26,10 @@ class Database
                     PDO::ATTR_EMULATE_PREPARES => false,
                 ]);
             } catch (PDOException $e) {
-                die("Database connection failed: " . $e->getMessage());
+                error_log("Database connection failed: " . $e->getMessage());
+                http_response_code(500);
+                require_once __DIR__ . '/../views/errors/500.php';
+                exit;
             }
         }
         return self::$instance;

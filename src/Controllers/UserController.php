@@ -28,6 +28,12 @@ class UserController
     public function create(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                require_once __DIR__ . '/../../views/user/create.php';
+                return;
+            }
+
             $v = new Validator();
             $v->required('username', $_POST['username'], 'Username');
             $v->required('email', $_POST['email'], 'Email');
@@ -62,6 +68,12 @@ class UserController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                require_once __DIR__ . '/../../views/user/edit.php';
+                return;
+            }
+
             $v = new Validator();
             $v->required('username', $_POST['username'], 'Username');
             $v->required('email', $_POST['email'], 'Email');
