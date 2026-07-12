@@ -18,8 +18,11 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             <option value="selesai" <?= ($_GET['status'] ?? '') == 'selesai' ? 'selected' : '' ?>>Selesai</option>
         </select>
         <button type="submit" class="bg-gray-600 text-white px-4 py-2 rounded">Filter</button>
+        <a href="/pengaduan/index" class="text-gray-600 px-3 py-2">Reset</a>
     </form>
 
+    <?php if (count($data) > 0): ?>
+    <p class="text-sm text-gray-500 mb-2">Total: <?= count($data) ?> pengaduan</p>
     <table class="w-full bg-white rounded shadow">
         <thead>
             <tr class="bg-gray-200">
@@ -43,7 +46,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
                         <?= Security::escapeHtml($row['status']) ?>
                     </span>
                 </td>
-                <td class="p-2"><?= Security::escapeHtml($row['created_at']) ?></td>
+                <td class="p-2"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($row['created_at']))) ?></td>
                 <td class="p-2">
                     <a href="/pengaduan/detail/<?= $row['id'] ?>" class="text-blue-600 text-sm">Detail</a>
                 </td>
@@ -51,6 +54,11 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php else: ?>
+    <div class="bg-white rounded shadow p-6 text-center text-gray-500">
+        Belum ada pengaduan.
+    </div>
+    <?php endif; ?>
 </div>
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 
