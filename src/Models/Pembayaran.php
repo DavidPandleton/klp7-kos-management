@@ -61,8 +61,21 @@ class Pembayaran
 
     public function konfirmasi(int $id): void
     {
-        $stmt = $this->db->prepare("UPDATE pembayaran SET status = 'lunas', tgl_bayar = CURDATE() WHERE id = ?");
-        $stmt->execute([$id]);
+        $bayar = $this->find($id);
+        if (!$bayar) return;
+
+        $tglJatuhTempo = sprintf('%04d-%02d-10', $bayar['tahun'], $bayar['bulan']);
+        $hariIni = new \DateTime();
+        $jatuhTempo = new \DateTime($tglJatuhTempo);
+        $denda = 0;
+
+        if ($hariIni > $jatuhTempo) {
+            $selisih = (int) $hariIni->diff($jatuhTempo)->days;
+            $denda = $selisih * 5000;
+        }
+
+        $stmt = $this->db->prepare("UPDATE pembayaran SET status = 'lunas', tgl_bayar = CURDATE(), denda = ? WHERE id = ?");
+        $stmt->execute([$denda, $id]);
     }
 
     public function tolak(int $id): void
