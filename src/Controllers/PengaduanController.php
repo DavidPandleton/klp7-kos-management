@@ -52,7 +52,7 @@ class PengaduanController
             $v = new Validator();
             $v->required('keluhan', $_POST['keluhan'], 'Keluhan');
 
-            $uploader = new FileUploader(__DIR__ . '/../../uploads/pengaduan', ['image/jpeg', 'image/png', 'image/jpg']);
+            $uploader = new FileUploader(dirname(__DIR__, 2) . '/public/uploads/pengaduan', ['image/jpeg', 'image/png', 'image/jpg']);
             $foto = $uploader->upload($_FILES['foto'] ?? [], 'aduan');
 
             if ($v->passes()) {

@@ -69,7 +69,7 @@ class PembayaranController
             $v->required('jumlah', $_POST['jumlah'], 'Jumlah bayar');
             $v->numeric('jumlah', $_POST['jumlah'], 'Jumlah bayar');
 
-            $uploader = new FileUploader(__DIR__ . '/../../uploads/bukti_bayar', ['image/jpeg', 'image/png', 'application/pdf']);
+            $uploader = new FileUploader(dirname(__DIR__, 2) . '/public/uploads/bukti_bayar', ['image/jpeg', 'image/png', 'application/pdf']);
             $bukti = $uploader->upload($_FILES['bukti'] ?? [], 'bayar');
 
             if ($v->passes()) {
@@ -104,7 +104,7 @@ class PembayaranController
         Auth::role(['admin', 'pemilik']);
         $bayar = $this->pembayaran->find($id);
         if ($bayar) {
-            $uploader = new FileUploader(__DIR__ . '/../../uploads/bukti_bayar');
+            $uploader = new FileUploader(dirname(__DIR__, 2) . '/public/uploads/bukti_bayar');
             $uploader->delete($bayar['bukti']);
         }
         $this->pembayaran->tolak($id);
