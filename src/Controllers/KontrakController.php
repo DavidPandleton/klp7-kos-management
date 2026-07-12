@@ -17,12 +17,13 @@ class KontrakController
     public function __construct()
     {
         Auth::check();
-        Auth::role(['admin', 'pemilik']);
         $this->kontrak = new Kontrak();
     }
 
     public function index(): void
     {
+        Auth::role(['admin', 'pemilik']);
+
         $status = $_GET['status'] ?? '';
         $filter = '';
         $params = [];
@@ -38,10 +39,28 @@ class KontrakController
 
     public function create(): void
     {
-        $userModel = new User();
-        $kamarModel = new Kamar();
-        $penyewaList = $userModel->getByRole('penyewa');
-        $kamarList = $kamarModel->getAll(" AND status = 'tersedia'", []);
+        $role = Auth::getUserRole();
+        $kamarId = $_GET['kamar_id'] ?? null;
+
+        if ($kamarId && $role === 'penyewa') {
+            $kamarModel = new Kamar();
+            $kamar = $kamarModel->find((int) $kamarId);
+            if (!$kamar || $kamar['status'] !== 'tersedia') {
+                Session::setFlash('error', 'Kamar tidak tersedia.');
+                header('Location: /kamar/index');
+                exit;
+            }
+            $penyewaId = Auth::getUserId();
+            $penyewaList = [];
+            $kamarList = [$kamar];
+        } else {
+            Auth::role(['admin', 'pemilik']);
+            $userModel = new User();
+            $kamarModel = new Kamar();
+            $penyewaList = $userModel->getByRole('penyewa');
+            $kamarList = $kamarModel->getAll(" AND status = 'tersedia'", []);
+            $penyewaId = null;
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!\App\Helpers\Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
@@ -51,8 +70,12 @@ class KontrakController
             }
 
             $v = new Validator();
-            $v->required('penyewa_id', $_POST['penyewa_id'], 'Penyewa');
-            $v->required('kamar_id', $_POST['kamar_id'], 'Kamar');
+            if ($role === 'penyewa') {
+                $v->required('kamar_id', $_POST['kamar_id'], 'Kamar');
+            } else {
+                $v->required('penyewa_id', $_POST['penyewa_id'], 'Penyewa');
+                $v->required('kamar_id', $_POST['kamar_id'], 'Kamar');
+            }
             $v->required('tgl_mulai', $_POST['tgl_mulai'], 'Tanggal mulai');
             $v->required('tgl_akhir', $_POST['tgl_akhir'], 'Tanggal akhir');
 
