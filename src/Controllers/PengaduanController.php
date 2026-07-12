@@ -42,6 +42,12 @@ class PengaduanController
     public function create(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                require_once __DIR__ . '/../../views/pengaduan/create.php';
+                return;
+            }
+
             $v = new Validator();
             $v->required('keluhan', $_POST['keluhan'], 'Keluhan');
 
@@ -94,6 +100,13 @@ class PengaduanController
     {
         Auth::role(['admin', 'pemilik']);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                \App\Helpers\Session::setFlash('error', 'Token tidak valid.');
+                header('Location: /pengaduan/detail/' . $id);
+                exit;
+            }
+
             $this->pengaduan->updateStatus($id, 'selesai', $_POST['respon']);
             Session::setFlash('success', 'Pengaduan selesai.');
             header('Location: /pengaduan/index');
