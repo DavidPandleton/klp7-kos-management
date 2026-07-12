@@ -33,7 +33,7 @@ CREATE TABLE kontrak (
     kamar_id INT NOT NULL,
     tgl_mulai DATE NOT NULL,
     tgl_akhir DATE NOT NULL,
-    status ENUM('aktif', 'selesai', 'dibatalkan') NOT NULL DEFAULT 'aktif',
+    status ENUM('menunggu', 'aktif', 'selesai', 'dibatalkan') NOT NULL DEFAULT 'menunggu',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (penyewa_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (kamar_id) REFERENCES kamar(id) ON DELETE CASCADE
