@@ -76,6 +76,9 @@ class Pembayaran
 
         $stmt = $this->db->prepare("UPDATE pembayaran SET status = 'lunas', tgl_bayar = CURDATE(), denda = ? WHERE id = ?");
         $stmt->execute([$denda, $id]);
+
+        $stmt = $this->db->prepare("UPDATE pembayaran SET status = 'lunas' WHERE kontrak_id = ? AND bulan = ? AND tahun = ? AND status = 'belum_bayar'");
+        $stmt->execute([$bayar['kontrak_id'], $bayar['bulan'], $bayar['tahun']]);
     }
 
     public function tolak(int $id): void
@@ -87,6 +90,15 @@ class Pembayaran
     public function getByKontrak(int $kontrakId): array
     {
         $stmt = $this->db->prepare("SELECT * FROM pembayaran WHERE kontrak_id = ? ORDER BY tahun DESC, bulan DESC");
+        $stmt->execute([$kontrakId]);
+        return $stmt->fetchAll();
+    }
+
+    public function getUnpaidByKontrak(int $kontrakId): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM pembayaran WHERE kontrak_id = ? AND status = 'belum_bayar' ORDER BY tahun, bulan"
+        );
         $stmt->execute([$kontrakId]);
         return $stmt->fetchAll();
     }

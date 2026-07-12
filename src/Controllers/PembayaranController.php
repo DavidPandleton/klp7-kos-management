@@ -58,6 +58,8 @@ class PembayaranController
             Auth::role(['admin', 'pemilik']);
         }
 
+        $tagihanBelumBayar = $this->pembayaran->getUnpaidByKontrak($kontrakId);
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
                 Session::setFlash('error', 'Token tidak valid.');
@@ -76,8 +78,6 @@ class PembayaranController
                 $_POST['kontrak_id'] = $kontrakId;
                 $_POST['bukti'] = $bukti;
                 $_POST['status'] = 'menunggu';
-                $_POST['bulan'] = (int) date('n', strtotime($kontrak['tgl_mulai']));
-                $_POST['tahun'] = (int) date('Y', strtotime($kontrak['tgl_mulai']));
                 $this->pembayaran->create($_POST);
                 Session::setFlash('success', 'Pembayaran diajukan, tunggu konfirmasi.');
                 header('Location: /kontrak/detail/' . $kontrakId);

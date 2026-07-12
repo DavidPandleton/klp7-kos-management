@@ -101,7 +101,6 @@ class PengaduanController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
                 Session::setFlash('error', 'Token tidak valid.');
-                \App\Helpers\Session::setFlash('error', 'Token tidak valid.');
                 header('Location: /pengaduan/detail/' . $id);
                 exit;
             }
