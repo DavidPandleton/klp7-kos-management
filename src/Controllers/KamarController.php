@@ -43,6 +43,12 @@ class KamarController
         Auth::role(['admin', 'pemilik']);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                require_once __DIR__ . '/../../views/kamar/create.php';
+                return;
+            }
+
             $v = new Validator();
             $v->required('nomor_kamar', $_POST['nomor_kamar'], 'Nomor kamar');
             $v->required('harga', $_POST['harga'], 'Harga');
@@ -85,6 +91,12 @@ class KamarController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                require_once __DIR__ . '/../../views/kamar/edit.php';
+                return;
+            }
+
             $v = new Validator();
             $v->required('nomor_kamar', $_POST['nomor_kamar'], 'Nomor kamar');
             $v->numeric('harga', $_POST['harga'], 'Harga');
