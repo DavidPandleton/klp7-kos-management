@@ -16,8 +16,11 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             <option value="dibatalkan" <?= ($_GET['status'] ?? '') == 'dibatalkan' ? 'selected' : '' ?>>Dibatalkan</option>
         </select>
         <button type="submit" class="bg-gray-600 text-white px-4 py-2 rounded">Filter</button>
+        <a href="/kontrak/index" class="text-gray-600 px-3 py-2">Reset</a>
     </form>
 
+    <?php if (count($data) > 0): ?>
+    <p class="text-sm text-gray-500 mb-2">Total: <?= count($data) ?> kontrak</p>
     <table class="w-full bg-white rounded shadow">
         <thead>
             <tr class="bg-gray-200">
@@ -34,8 +37,8 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             <tr class="border-t">
                 <td class="p-2"><?= Security::escapeHtml($row['nama_penyewa']) ?></td>
                 <td class="p-2"><?= Security::escapeHtml($row['nomor_kamar']) ?></td>
-                <td class="p-2"><?= Security::escapeHtml($row['tgl_mulai']) ?></td>
-                <td class="p-2"><?= Security::escapeHtml($row['tgl_akhir']) ?></td>
+                <td class="p-2"><?= Security::escapeHtml(date('d/m/Y', strtotime($row['tgl_mulai']))) ?></td>
+                <td class="p-2"><?= Security::escapeHtml(date('d/m/Y', strtotime($row['tgl_akhir']))) ?></td>
                 <td class="p-2">
                     <span class="px-2 py-1 rounded text-white text-xs
                         <?= $row['status'] == 'aktif' ? 'bg-green-500' : ($row['status'] == 'selesai' ? 'bg-gray-500' : 'bg-red-500') ?>">
@@ -53,6 +56,11 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php else: ?>
+    <div class="bg-white rounded shadow p-6 text-center text-gray-500">
+        Belum ada kontrak sewa.
+    </div>
+    <?php endif; ?>
 </div>
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 
