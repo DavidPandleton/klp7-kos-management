@@ -136,7 +136,7 @@ Coba juga akses `/user/index` sebagai penyewa → harusnya 403. Ini bukti RBAC j
 
 ---
 
-## Fitur Keamanan (Yang Sering Ditanya Dosen)
+## Fitur Keamanan
 
 | Fitur | Implementasi |
 |-------|-------------|
