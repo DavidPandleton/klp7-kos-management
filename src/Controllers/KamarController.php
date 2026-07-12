@@ -7,17 +7,21 @@ use App\Middleware\Auth;
 use App\Helpers\Session;
 use App\Helpers\Security;
 use App\Helpers\Validator;
+use App\Helpers\FileUploader;
 
 class KamarController
 {
     private Kamar $kamar;
-    private string $uploadPath;
+    private FileUploader $uploader;
 
     public function __construct()
     {
         Auth::check();
         $this->kamar = new Kamar();
-        $this->uploadPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'kamar' . DIRECTORY_SEPARATOR;
+        $this->uploader = new FileUploader(
+            dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'kamar',
+            ['image/jpeg', 'image/png', 'image/jpg']
+        );
     }
 
     public function index(): void
@@ -54,15 +58,7 @@ class KamarController
             $v->required('harga', $_POST['harga'], 'Harga');
             $v->numeric('harga', $_POST['harga'], 'Harga');
 
-            $foto = null;
-            if (!empty($_FILES['foto']['name'])) {
-                $v->file('foto', $_FILES['foto'], ['image/jpeg', 'image/png', 'image/jpg'], 2097152, 'Foto');
-                if ($v->passes()) {
-                    $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-                    $foto = 'kamar_' . time() . '.' . $ext;
-                    move_uploaded_file($_FILES['foto']['tmp_name'], $this->uploadPath . $foto);
-                }
-            }
+            $foto = $this->uploader->upload($_FILES['foto'] ?? [], 'kamar');
 
             if ($v->passes()) {
                 $_POST['foto'] = $foto;
@@ -103,26 +99,15 @@ class KamarController
 
             $foto = $kamar['foto'];
 
-            // Hapus foto jika dicentang
             if (isset($_POST['hapus_foto']) && $_POST['hapus_foto'] == '1') {
-                if ($kamar['foto'] && file_exists($this->uploadPath . $kamar['foto'])) {
-                    unlink($this->uploadPath . $kamar['foto']);
-                }
+                $this->uploader->delete($kamar['foto']);
                 $foto = null;
             }
 
-            // Upload foto baru jika ada
-            if (!empty($_FILES['foto']['name'])) {
-                $v->file('foto', $_FILES['foto'], ['image/jpeg', 'image/png', 'image/jpg'], 2097152, 'Foto');
-                if ($v->passes()) {
-                    $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-                    $newFoto = 'kamar_' . time() . '.' . $ext;
-                    move_uploaded_file($_FILES['foto']['tmp_name'], $this->uploadPath . $newFoto);
-                    if ($foto && file_exists($this->uploadPath . $foto)) {
-                        unlink($this->uploadPath . $foto);
-                    }
-                    $foto = $newFoto;
-                }
+            $newFoto = $this->uploader->upload($_FILES['foto'] ?? [], 'kamar');
+            if ($newFoto !== null) {
+                $this->uploader->delete($foto);
+                $foto = $newFoto;
             }
 
             if ($v->passes()) {
@@ -145,8 +130,8 @@ class KamarController
         Auth::role(['admin', 'pemilik']);
 
         $kamar = $this->kamar->find($id);
-        if ($kamar && $kamar['foto'] && file_exists($this->uploadPath . $kamar['foto'])) {
-            unlink($this->uploadPath . $kamar['foto']);
+        if ($kamar) {
+            $this->uploader->delete($kamar['foto']);
         }
         $this->kamar->delete($id);
         Session::setFlash('success', 'Kamar berhasil dihapus.');
