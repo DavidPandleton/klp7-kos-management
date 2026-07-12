@@ -25,6 +25,12 @@ class AuthController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                require_once __DIR__ . '/../../views/auth/login.php';
+                return;
+            }
+
             $v = new Validator();
             $v->required('email', $_POST['email'] ?? '', 'Email');
             $v->required('password', $_POST['password'] ?? '', 'Password');
@@ -34,6 +40,7 @@ class AuthController
                 $user = $userModel->findByEmail($_POST['email']);
 
                 if ($user && password_verify($_POST['password'], $user['password'])) {
+                    session_regenerate_id(true);
                     Session::set('user_id', $user['id']);
                     Session::set('user_nama', $user['username']);
                     Session::set('user_role', $user['role']);
@@ -62,6 +69,12 @@ class AuthController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                require_once __DIR__ . '/../../views/auth/register.php';
+                return;
+            }
+
             $v = new Validator();
             $v->required('username', $_POST['username'] ?? '', 'Username');
             $v->required('email', $_POST['email'] ?? '', 'Email');
@@ -102,6 +115,12 @@ class AuthController
         $user = $userModel->find(Auth::getUserId());
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                require_once __DIR__ . '/../../views/auth/profile.php';
+                return;
+            }
+
             $v = new Validator();
             $v->required('username', $_POST['username'], 'Username');
             $v->required('email', $_POST['email'], 'Email');
