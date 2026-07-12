@@ -26,7 +26,8 @@
     $role = $_SESSION['user_role'] ?? '';
     $uri = $_SERVER['REQUEST_URI'] ?? '/';
     function isActive(string $path): string {
-        return str_starts_with($GLOBALS['uri'], $path) ? 'bg-violet-600 text-white' : 'text-gray-600 hover:bg-gray-100';
+        $u = $_SERVER['REQUEST_URI'] ?? '/';
+        return str_starts_with($u, $path) ? 'bg-violet-600 text-white' : 'text-gray-600 hover:bg-gray-100';
     }
     ?>
     <nav class="bg-white border-b px-6 py-2 flex flex-wrap gap-1 text-sm">

@@ -5,7 +5,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
 <div class="max-w-2xl mx-auto bg-white rounded shadow p-6">
     <h1 class="text-2xl font-bold mb-4">Bayar Sewa</h1>
     <p class="mb-4">Kamar: <strong><?= Security::escapeHtml($kontrak['nomor_kamar']) ?></strong> |
-       Periode: <?= date('F Y') ?></p>
+       Periode: <?= Security::escapeHtml(date('F Y', strtotime($kontrak['tgl_mulai']))) ?></p>
 
     <form method="POST" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCsrfToken() ?>">
