@@ -2,91 +2,49 @@
 
 Project mata kuliah **Pengembangan Sistem Backend (SI253314)** — Kelompok 7
 
-> Sistem manajemen kos berbasis web dengan fitur CRUD multi-entitas, RBAC, pembayaran, pengaduan, dan laporan PDF.
+**Repo:** https://github.com/DavidPandleton/klp7-kos-management
 
 ---
 
-## Anggota Kelompok
+## Anggota & Tugas Masing-masing
 
-| No | Nama | NIM | Tugas |
-|----|------|-----|-------|
-| 1 | I Gusti Nyoman David Ray Tarigan | 250030487 | Auth, Middleware, Dashboard, Email, Laporan PDF |
-| 2 | Ida Bagus Mastyendra Suja | 250030077 | Manajemen Kamar |
-| 3 | Gede Richi Ary Sanjaya | 250030066 | Kontrak & Pembayaran |
-| 4 | I Gusti Agus Tisna Yoga | 250030088 | Pengaduan |
-
----
-
-## Tech Stack
-
-- **PHP 8.x** (Native)
-- **MySQL** (via phpMyAdmin)
-- **Composer** — PHPMailer, FPDF
-- **Tailwind CSS** (via CDN)
-- **Git & GitHub** — kolaborasi
+| Nama | NIM | Modul |
+|------|-----|-------|
+| I Gusti Nyoman David Ray Tarigan | 250030487 | Auth, Middleware, Dashboard, User, Laporan PDF, Email |
+| Ida Bagus Mastyendra Suja | 250030077 | Manajemen Kamar |
+| Gede Richi Ary Sanjaya | 250030066 | Kontrak Sewa & Pembayaran |
+| I Gusti Agus Tisna Yoga | 250030088 | Pengaduan |
 
 ---
 
-## Panduan Setup
+## Cara Setup (Buat yang baru clone)
 
-### 1. Persiapan Tools
+### 1. Jalankan XAMPP (Apache + MySQL)
 
-| Tool | Download | Keterangan |
-|------|----------|------------|
-| XAMPP | https://www.apachefriends.org/ | PHP + MySQL + phpMyAdmin |
-| Composer | https://getcomposer.org/ | Dependency manager PHP |
-| Git | https://git-scm.com/ | Version control |
-| VS Code | https://code.visualstudio.com/ | Code editor (opsional) |
+### 2. Clone & Install
 
-### 2. Clone Repository
-
-```
+```bash
 cd C:\xampp\htdocs
 git clone https://github.com/DavidPandleton/klp7-kos-management.git
 cd klp7-kos-management
-```
-
-### 3. Install Dependencies (Composer)
-
-```
 composer install
 ```
 
-Jika Composer tidak dikenali, gunakan PHP langsung dari XAMPP:
+### 3. Setup Database
 
-```
-"C:\xampp\php\php.exe" composer.phar install
-```
+Buka phpMyAdmin → tab SQL → paste isi `database/schema.sql` → jalankan.
 
-### 4. Setup Database
+### 4. Jalankan
 
-1. Buka **XAMPP Control Panel**
-2. Start **Apache** dan **MySQL**
-3. Buka browser: `http://localhost/phpmyadmin`
-4. Klik tab **SQL**
-5. Salin isi file `database/schema.sql` lalu jalankan
-
-Atau melalui command line:
-
-```
-mysql -u root < database/schema.sql
-```
-
-### 5. Menjalankan Project
-
-**Via PHP built-in server (disarankan):**
-
-```
+```bash
 php -S localhost:8000 -t public
 ```
 
-Buka: `http://localhost:8000`
+Buka `http://localhost:8000`
 
-**Via XAMPP:**
-- Pastikan project berada di `C:\xampp\htdocs\klp7-kos-management`
-- Buka: `http://localhost/klp7-kos-management/public/`
+---
 
-### 6. Login (Akun Test)
+## Akun Test
 
 | Role | Email | Password |
 |------|-------|----------|
@@ -96,158 +54,106 @@ Buka: `http://localhost:8000`
 
 ---
 
-## Struktur Folder
+## Panduan Demo (Urutan Presentasi)
+
+### 1️⃣ Register & Login (Penyewa)
+- Buka `/auth/register` → buat akun baru
+- Login dengan akun yang baru dibuat
+- **Yang dinilai:** validasi email (cek email udah terdaftar), validasi username (cek duplikat), password di-hash
+
+### 2️⃣ Lihat & Sewa Kamar (Penyewa)
+- `/kamar/index` — penyewa cuma lihat kamar yang `tersedia` (kamar terisi/maintenance gak muncul)
+- Klik detail kamar → tombol **"Ajukan Sewa"**
+- Isi tanggal mulai & akhir → submit
+- **Yang dinilai:** filter role-based, validasi tanggal (gak boleh mundur, maks 12 bulan), CSRF token
+
+### 3️⃣ Approval Kontrak (Admin)
+- Login sebagai **admin@kos.com**
+- Dashboard → lihat card **"Pengajuan Kontrak Baru"**
+- Klik Review → lihat detail pengajuan
+- Klik **Setujui** → kontrak jadi `aktif`, kamar jadi `terisi`, tagihan langsung auto-generate per bulan
+- **Yang dinilai:** RBAC (hanya admin/pemilik bisa approve), transaction (kalo gagal rollback), auto-generate tagihan
+
+Coba juga akses `/user/index` sebagai penyewa → harusnya 403. Ini bukti RBAC jalan.
+
+### 4️⃣ Bayar Sewa (Penyewa + Admin)
+- Login sebagai penyewa
+- Dashboard → lihat card **"Kontrak Aktif"** + tombol **Bayar**
+- Klik Bayar → pilih bulan dari dropdown (hanya bulan yg belum dibayar)
+- Upload bukti transfer (file .png/.jpg/.pdf) → Ajukan Pembayaran
+- Login sebagai admin → `/pembayaran/index` → lihat status **"Menunggu"**
+- Klik **Konfirmasi** → status jadi `lunas`, denda otomatis dihitung kalo telat (lewat tgl 10)
+- **Yang dinilai:** ownership check (penyewa cuma bisa bayar kontrak sendiri), denda logic, MIME validation upload
+
+### 5️⃣ Pengaduan (Penyewa + Admin)
+- Login sebagai penyewa → `/pengaduan/create` → isi keluhan → Kirim
+- Login sebagai admin → `/pengaduan/index` → lihat pengaduan baru
+- Klik Detail → **Proses** → status `diproses`
+- Klik **Selesaikan** → isi respon → selesai
+- **Yang dinilai:** ownership check, CRUD pengaduan, respon admin
+
+### 6️⃣ Laporan PDF (Admin)
+- Login sebagai admin → `/laporan/index`
+- Pilih bulan/tahun → **Cetak PDF**
+- PDF kebuka dengan: kop KOSKU, tabel pembayaran, total pendapatan, tanda tangan pemilik
+- **Yang dinilai:** integrasi library FPDF
+
+### 7️⃣ Manajemen User (Admin)
+- `/user/index` — CRUD user, role admin/pemilik/penyewa
+- Admin gak bisa hapus diri sendiri
+- Admin gak bisa ganti role sendiri
+- Kalo hapus user yang punya kontrak aktif → ditolak
+- **Yang dinilai:** RBAC, data integrity guard
+
+---
+
+## Struktur Folder (Buat Referensi)
 
 ```
-klp7-kos-management/
-│
-├── public/                    # DIakses oleh browser
-│   ├── index.php              # Router
-│   └── .htaccess              # Rewrite URL
-│
-├── config/
-│   └── database.php           # Koneksi database PDO
-│
-├── src/                       # Kode PHP (OOP)
-│   ├── Controllers/
-│   │   ├── AuthController.php
-│   │   ├── DashboardController.php
-│   │   ├── KamarController.php
-│   │   ├── KontrakController.php
-│   │   ├── PembayaranController.php
-│   │   ├── PengaduanController.php
-│   │   └── UserController.php
-│   ├── Models/
-│   │   ├── User.php
-│   │   ├── Kamar.php
-│   │   ├── Kontrak.php
-│   │   ├── Pembayaran.php
-│   │   └── Pengaduan.php
-│   ├── Middleware/
-│   │   └── Auth.php           # Cek login + role
-│   └── Helpers/
-│       ├── Session.php
-│       ├── Validator.php
-│       └── Security.php
-│
-├── views/
-│   ├── layouts/               # Header & footer
-│   ├── auth/                  # Login, register, profile
-│   ├── dashboard/             # Admin, pemilik, penyewa
-│   ├── kamar/                 # CRUD kamar
-│   ├── kontrak/               # CRUD kontrak
-│   ├── pembayaran/            # CRUD pembayaran
-│   ├── pengaduan/             # CRUD pengaduan
-│   ├── user/                  # Manajemen user (admin)
-│   └── errors/                # 403, 404
-│
-├── uploads/
-│   ├── kamar/                 # Foto kamar
-│   ├── bukti_bayar/           # Bukti transfer
-│   └── pengaduan/             # Foto pengaduan
-│
-├── database/
-│   └── schema.sql             # DDL + seed data
-│
-├── vendor/                    # Composer packages
-├── composer.json
-├── composer.lock
-└── README.md
+├── public/index.php            # Router (front controller)
+├── config/database.php         # Koneksi PDO singleton
+├── src/
+│   ├── Controllers/            # 9 controller
+│   ├── Models/                 # 5 model (PDO prepared statement)
+│   ├── Middleware/Auth.php     # Auth check + RBAC
+│   └── Helpers/                # Session, Validator, Security, FileUploader, Mailer
+├── views/                      # Template + Tailwind CDN
+│   ├── auth/                   # Login, register, profile
+│   ├── dashboard/              # Admin, pemilik, penyewa
+│   ├── kamar/                  # CRUD kamar
+│   ├── kontrak/                # CRUD kontrak
+│   ├── pembayaran/             # Bayar + riwayat
+│   ├── pengaduan/              # CRUD pengaduan
+│   ├── user/                   # Manajemen user (admin only)
+│   ├── laporan/                # Form cetak PDF
+│   ├── notifikasi/             # Kirim email
+│   └── errors/                 # 403, 404, 500
+├── database/schema.sql         # DDL + seed data
+├── public/uploads/             # Foto kamar, bukti bayar, foto pengaduan
+├── docs/evaluasi-library.md    # Evaluasi PHPMailer & FPDF
+└── docs/evaluasi-library.md
 ```
 
 ---
 
-## Alur Kerja Git
+## Fitur Keamanan (Yang Sering Ditanya Dosen)
 
-### Branch yang Tersedia
-
-| Branch | Deskripsi |
-|--------|-----------|
-| `master` | Kode stabil |
-| `dev` | Tempat penggabungan semua fitur |
-| `fitur/auth` | Auth, Middleware, Dashboard (David) |
-| `fitur/kamar` | CRUD Kamar + upload foto (Gusandra) |
-| `fitur/kontrak` | Kontrak sewa (Richie) |
-| `fitur/pembayaran` | Pembayaran (Richie) |
-| `fitur/pengaduan` | Pengaduan (Tisna) |
-
-### Cara Menggunakan Git
-
-**Sebelum mulai mengerjakan:**
-
-```
-git checkout dev
-git pull origin dev
-git checkout fitur/nama_fitur
-```
-
-**Setelah selesai mengerjakan:**
-
-```
-git add .
-git commit -m "keterangan singkat"
-git push origin fitur/nama_fitur
-```
-
-**Untuk menggabungkan ke dev:**
-1. Buka GitHub
-2. Buat Pull Request dari branch fitur ke `dev`
-3. Minta anggota lain untuk review
-4. Jika sudah disetujui, merge
-
-> **Catatan:** Jangan melakukan commit langsung ke `master` atau `dev`. Selalu gunakan branch fitur masing-masing.
+| Fitur | Implementasi |
+|-------|-------------|
+| **SQL Injection** | PDO prepared statement (`?` parameter) di semua query |
+| **XSS** | `htmlspecialchars()` di setiap output |
+| **CSRF** | Token generate + verify di semua form POST |
+| **Password** | `password_hash()` bcrypt |
+| **Session** | Regenerasi setelah login, timeout 30 menit |
+| **RBAC** | `Auth::role(['admin'])` — middleware di tiap method |
+| **File Upload** | Validasi MIME type, ukuran, rename pake timestamp |
+| **Ownership** | Penyewa cuma bisa akses kontrak/pengaduan/pembayaran milik sendiri |
 
 ---
 
-## Pembagian Modul
+## Library Eksternal
 
-### David — Auth, Middleware, Dashboard, Email, Laporan PDF
-- `src/Controllers/AuthController.php`
-- `src/Controllers/DashboardController.php`
-- `src/Controllers/UserController.php`
-- `views/auth/` — login, register, profile
-- `views/dashboard/` — admin, pemilik, penyewa
-- `views/user/` — manajemen user
-- `src/Middleware/Auth.php`
-- `src/Helpers/Session.php`, `Security.php`, `Validator.php`
-- Notifikasi email (PHPMailer)
-- Export laporan PDF (FPDF)
-
-### Gusandra — Manajemen Kamar
-- `src/Controllers/KamarController.php`
-- `src/Models/Kamar.php`
-- `views/kamar/index.php`
-- `views/kamar/create.php`
-- `views/kamar/edit.php`
-- `views/kamar/detail.php`
-
-### Richie — Kontrak & Pembayaran
-- `src/Controllers/KontrakController.php`
-- `src/Controllers/PembayaranController.php`
-- `src/Models/Kontrak.php`
-- `src/Models/Pembayaran.php`
-- `views/kontrak/index.php`
-- `views/kontrak/create.php`
-- `views/kontrak/detail.php`
-- `views/pembayaran/index.php`
-- `views/pembayaran/bayar.php`
-
-### Tisna — Pengaduan
-- `src/Controllers/PengaduanController.php`
-- `src/Models/Pengaduan.php`
-- `views/pengaduan/index.php`
-- `views/pengaduan/create.php`
-- `views/pengaduan/detail.php`
-- `views/pengaduan/selesai.php`
-
----
-
-## Aturan Pengembangan
-
-1. **Kode wajib menggunakan OOP** — class, method, properti. Tidak boleh procedural.
-2. **Semua query menggunakan PDO prepared statement** — tidak boleh menggunakan `mysqli_query()`.
-3. **Setiap output HTML menggunakan `htmlspecialchars()`** — untuk mencegah XSS.
-4. **Input form harus divalidasi** — gunakan `Validator.php` yang sudah disediakan.
-5. **Password di-hash menggunakan `password_hash()`** — jangan menyimpan plain text.
-6. **Commit setiap selesai mengerjakan fitur** — agar history terlihat.
-7. **Setiap anggota wajib memiliki minimal 3 commit** — akan dinilai oleh dosen.
+| Library | Fungsi | Dokumentasi |
+|---------|--------|-------------|
+| **PHPMailer** ^6.9 | Kirim notifikasi email via SMTP | `docs/evaluasi-library.md` |
+| **FPDF** ^1.85 | Generate laporan PDF | `docs/evaluasi-library.md` |
