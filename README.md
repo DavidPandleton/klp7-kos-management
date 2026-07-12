@@ -1,6 +1,6 @@
 # KLP-7 Sistem Manajemen Kos / Kontrakan
 
-Project mata kuliah **Pengembangan Sistem Backend (SI253314)** — Kelompok 7
+Project mata kuliah **Pengembangan Sistem Backend (SI253314)** --  Kelompok 7
 
 **Repo:** https://github.com/DavidPandleton/klp7-kos-management
 
@@ -32,7 +32,7 @@ composer install
 
 ### 3. Setup Database
 
-Buka phpMyAdmin → tab SQL → paste isi `database/schema.sql` → jalankan.
+Buka phpMyAdmin - tab SQL - paste isi `database/schema.sql` - jalankan.
 
 ### 4. Jalankan
 
@@ -56,53 +56,53 @@ Buka `http://localhost:8000`
 
 ## Panduan Demo (Urutan Presentasi)
 
-### 1️⃣ Register & Login (Penyewa)
-- Buka `/auth/register` → buat akun baru
+### 1. Register & Login (Penyewa)
+- Buka `/auth/register` - buat akun baru
 - Login dengan akun yang baru dibuat
 - **Yang dinilai:** validasi email (cek email udah terdaftar), validasi username (cek duplikat), password di-hash
 
-### 2️⃣ Lihat & Sewa Kamar (Penyewa)
-- `/kamar/index` — penyewa cuma lihat kamar yang `tersedia` (kamar terisi/maintenance gak muncul)
-- Klik detail kamar → tombol **"Ajukan Sewa"**
-- Isi tanggal mulai & akhir → submit
+### 2. Lihat & Sewa Kamar (Penyewa)
+- `/kamar/index` --  penyewa cuma lihat kamar yang `tersedia` (kamar terisi/maintenance gak muncul)
+- Klik detail kamar - tombol **"Ajukan Sewa"**
+- Isi tanggal mulai & akhir - submit
 - **Yang dinilai:** filter role-based, validasi tanggal (gak boleh mundur, maks 12 bulan), CSRF token
 
-### 3️⃣ Approval Kontrak (Admin)
+### 3. Approval Kontrak (Admin)
 - Login sebagai **admin@kos.com**
-- Dashboard → lihat card **"Pengajuan Kontrak Baru"**
-- Klik Review → lihat detail pengajuan
-- Klik **Setujui** → kontrak jadi `aktif`, kamar jadi `terisi`, tagihan langsung auto-generate per bulan
+- Dashboard - lihat card **"Pengajuan Kontrak Baru"**
+- Klik Review - lihat detail pengajuan
+- Klik **Setujui** - kontrak jadi `aktif`, kamar jadi `terisi`, tagihan langsung auto-generate per bulan
 - **Yang dinilai:** RBAC (hanya admin/pemilik bisa approve), transaction (kalo gagal rollback), auto-generate tagihan
 
-Coba juga akses `/user/index` sebagai penyewa → harusnya 403. Ini bukti RBAC jalan.
+Coba juga akses `/user/index` sebagai penyewa - harusnya 403. Ini bukti RBAC jalan.
 
-### 4️⃣ Bayar Sewa (Penyewa + Admin)
+### 4. Bayar Sewa (Penyewa + Admin)
 - Login sebagai penyewa
-- Dashboard → lihat card **"Kontrak Aktif"** + tombol **Bayar**
-- Klik Bayar → pilih bulan dari dropdown (hanya bulan yg belum dibayar)
-- Upload bukti transfer (file .png/.jpg/.pdf) → Ajukan Pembayaran
-- Login sebagai admin → `/pembayaran/index` → lihat status **"Menunggu"**
-- Klik **Konfirmasi** → status jadi `lunas`, denda otomatis dihitung kalo telat (lewat tgl 10)
+- Dashboard - lihat card **"Kontrak Aktif"** + tombol **Bayar**
+- Klik Bayar - pilih bulan dari dropdown (hanya bulan yg belum dibayar)
+- Upload bukti transfer (file .png/.jpg/.pdf) - Ajukan Pembayaran
+- Login sebagai admin - `/pembayaran/index` - lihat status **"Menunggu"**
+- Klik **Konfirmasi** - status jadi `lunas`, denda otomatis dihitung kalo telat (lewat tgl 10)
 - **Yang dinilai:** ownership check (penyewa cuma bisa bayar kontrak sendiri), denda logic, MIME validation upload
 
-### 5️⃣ Pengaduan (Penyewa + Admin)
-- Login sebagai penyewa → `/pengaduan/create` → isi keluhan → Kirim
-- Login sebagai admin → `/pengaduan/index` → lihat pengaduan baru
-- Klik Detail → **Proses** → status `diproses`
-- Klik **Selesaikan** → isi respon → selesai
+### 5. Pengaduan (Penyewa + Admin)
+- Login sebagai penyewa - `/pengaduan/create` - isi keluhan - Kirim
+- Login sebagai admin - `/pengaduan/index` - lihat pengaduan baru
+- Klik Detail - **Proses** - status `diproses`
+- Klik **Selesaikan** - isi respon - selesai
 - **Yang dinilai:** ownership check, CRUD pengaduan, respon admin
 
-### 6️⃣ Laporan PDF (Admin)
-- Login sebagai admin → `/laporan/index`
-- Pilih bulan/tahun → **Cetak PDF**
+### 6. Laporan PDF (Admin)
+- Login sebagai admin - `/laporan/index`
+- Pilih bulan/tahun - **Cetak PDF**
 - PDF kebuka dengan: kop KOSKU, tabel pembayaran, total pendapatan, tanda tangan pemilik
 - **Yang dinilai:** integrasi library FPDF
 
-### 7️⃣ Manajemen User (Admin)
-- `/user/index` — CRUD user, role admin/pemilik/penyewa
+### 7. Manajemen User (Admin)
+- `/user/index` --  CRUD user, role admin/pemilik/penyewa
 - Admin gak bisa hapus diri sendiri
 - Admin gak bisa ganti role sendiri
-- Kalo hapus user yang punya kontrak aktif → ditolak
+- Kalo hapus user yang punya kontrak aktif - ditolak
 - **Yang dinilai:** RBAC, data integrity guard
 
 ---
@@ -110,28 +110,28 @@ Coba juga akses `/user/index` sebagai penyewa → harusnya 403. Ini bukti RBAC j
 ## Struktur Folder (Buat Referensi)
 
 ```
-├── public/index.php            # Router (front controller)
-├── config/database.php         # Koneksi PDO singleton
-├── src/
-│   ├── Controllers/            # 9 controller
-│   ├── Models/                 # 5 model (PDO prepared statement)
-│   ├── Middleware/Auth.php     # Auth check + RBAC
-│   └── Helpers/                # Session, Validator, Security, FileUploader, Mailer
-├── views/                      # Template + Tailwind CDN
-│   ├── auth/                   # Login, register, profile
-│   ├── dashboard/              # Admin, pemilik, penyewa
-│   ├── kamar/                  # CRUD kamar
-│   ├── kontrak/                # CRUD kontrak
-│   ├── pembayaran/             # Bayar + riwayat
-│   ├── pengaduan/              # CRUD pengaduan
-│   ├── user/                   # Manajemen user (admin only)
-│   ├── laporan/                # Form cetak PDF
-│   ├── notifikasi/             # Kirim email
-│   └── errors/                 # 403, 404, 500
-├── database/schema.sql         # DDL + seed data
-├── public/uploads/             # Foto kamar, bukti bayar, foto pengaduan
-├── docs/evaluasi-library.md    # Evaluasi PHPMailer & FPDF
-└── docs/evaluasi-library.md
+|------ public/index.php            # Router (front controller)
+|------ config/database.php         # Koneksi PDO singleton
+|------ src/
+|     |------ Controllers/            # 9 controller
+|     |------ Models/                 # 5 model (PDO prepared statement)
+|     |------ Middleware/Auth.php     # Auth check + RBAC
+|     +------ Helpers/                # Session, Validator, Security, FileUploader, Mailer
+|------ views/                      # Template + Tailwind CDN
+|     |------ auth/                   # Login, register, profile
+|     |------ dashboard/              # Admin, pemilik, penyewa
+|     |------ kamar/                  # CRUD kamar
+|     |------ kontrak/                # CRUD kontrak
+|     |------ pembayaran/             # Bayar + riwayat
+|     |------ pengaduan/              # CRUD pengaduan
+|     |------ user/                   # Manajemen user (admin only)
+|     |------ laporan/                # Form cetak PDF
+|     |------ notifikasi/             # Kirim email
+|     +------ errors/                 # 403, 404, 500
+|------ database/schema.sql         # DDL + seed data
+|------ public/uploads/             # Foto kamar, bukti bayar, foto pengaduan
+|------ docs/evaluasi-library.md    # Evaluasi PHPMailer & FPDF
++------ docs/evaluasi-library.md
 ```
 
 ---
@@ -145,7 +145,7 @@ Coba juga akses `/user/index` sebagai penyewa → harusnya 403. Ini bukti RBAC j
 | **CSRF** | Token generate + verify di semua form POST |
 | **Password** | `password_hash()` bcrypt |
 | **Session** | Regenerasi setelah login, timeout 30 menit |
-| **RBAC** | `Auth::role(['admin'])` — middleware di tiap method |
+| **RBAC** | `Auth::role(['admin'])` --  middleware di tiap method |
 | **File Upload** | Validasi MIME type, ukuran, rename pake timestamp |
 | **Ownership** | Penyewa cuma bisa akses kontrak/pengaduan/pembayaran milik sendiri |
 
