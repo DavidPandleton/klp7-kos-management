@@ -3,8 +3,7 @@
     <h1 class="text-2xl font-bold mb-4">Kirim Notifikasi Email</h1>
 
     <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded mb-4 text-sm">
-        <strong>Catatan:</strong> Email dikirim via SMTP Gmail. Pastikan konfigurasi email di
-        <code>src/Helpers/Mailer.php</code> sudah diisi dengan benar sebelum digunakan.
+        <strong>Catatan:</strong> Email dikirim via SMTP Gmail.
     </div>
 
     <form method="POST" action="/notifikasi/kirim">
