@@ -27,7 +27,7 @@ $isOwner = in_array($role, ['admin', 'pemilik']);
     <p class="text-sm text-gray-500 mb-2">Total: <?= count($data) ?> kamar</p>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <?php foreach ($data as $row): ?>
-        <div class="bg-white rounded shadow p-4 hover:shadow-lg transition-shadow duration-200 cursor-pointer">
+        <div class="bg-white rounded shadow p-4 hover:shadow-lg transition-shadow duration-200 cursor-pointer" onclick="window.location='/kamar/detail/<?= $row['id'] ?>'">
             <?php if ($row['foto']): ?>
                 <img src="/uploads/kamar/<?= Security::escapeHtml($row['foto']) ?>" class="w-full h-40 object-cover rounded mb-3">
             <?php endif; ?>
@@ -43,10 +43,12 @@ $isOwner = in_array($role, ['admin', 'pemilik']);
             </p>
             <p class="text-gray-500 text-sm mt-1">Fasilitas: <?= Security::escapeHtml($row['fasilitas']) ?></p>
             <div class="mt-3 flex gap-2">
-                <a href="/kamar/detail/<?= $row['id'] ?>" class="text-violet-600 text-sm">Detail</a>
+                <?php if (!$isOwner): ?>
+                <span class="text-violet-600 text-sm">Detail</span>
+                <?php endif; ?>
                 <?php if ($isOwner): ?>
-                <a href="/kamar/edit/<?= $row['id'] ?>" class="text-yellow-600 text-sm">Edit</a>
-                <a href="/kamar/delete/<?= $row['id'] ?>" class="text-red-600 text-sm" onclick="return confirm('Yakin hapus?')">Hapus</a>
+                <a href="/kamar/edit/<?= $row['id'] ?>" class="text-yellow-600 text-sm" onclick="event.stopPropagation()">Edit</a>
+                <a href="/kamar/delete/<?= $row['id'] ?>" class="text-red-600 text-sm" onclick="event.stopPropagation(); return confirm('Yakin hapus?')">Hapus</a>
                 <?php endif; ?>
             </div>
         </div>
