@@ -7,7 +7,6 @@ use App\Middleware\Auth;
 use App\Helpers\Session;
 use App\Helpers\Security;
 use App\Helpers\Validator;
-use App\Helpers\FileUploader;
 use App\Models\Kontrak;
 
 class KamarController
@@ -149,11 +148,23 @@ class KamarController
         Auth::role(['admin', 'pemilik']);
 
         $kamar = $this->kamar->find($id);
-        if ($kamar && $kamar['foto'] && file_exists($this->uploadPath . $kamar['foto'])) {
+        if (!$kamar) {
+            http_response_code(404);
+            require_once __DIR__ . '/../../views/errors/404.php';
+            return;
+        }
+
+        $kontrakModel = new Kontrak();
+        if ($kontrakModel->hasActiveByKamar($id)) {
+            Session::setFlash('error', 'Kamar tidak bisa dihapus karena masih ada kontrak aktif.');
+            header('Location: /kamar/index');
+            exit;
+        }
+
+        if ($kamar['foto'] && file_exists($this->uploadPath . $kamar['foto'])) {
             unlink($this->uploadPath . $kamar['foto']);
         }
 
-        $this->uploader->delete($kamar['foto']);
         $this->kamar->delete($id);
         Session::setFlash('success', 'Kamar berhasil dihapus.');
         header('Location: /kamar/index');
