@@ -10,7 +10,7 @@ class Mailer
     private static string $host = 'smtp.gmail.com';
     private static int $port = 587;
     private static string $username = 'kosku.notif@gmail.com';
-    private static string $password = 'your-app-password';
+    private static string $password = 'your-app-password'; // app password: ufim otve egyb wnxj
     private static string $fromName = 'KosKu Management';
 
     public static function send(string $to, string $toName, string $subject, string $body): bool
