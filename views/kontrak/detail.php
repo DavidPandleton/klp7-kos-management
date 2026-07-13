@@ -17,8 +17,11 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
     <hr class="my-4">
     <h2 class="text-xl font-bold mb-3">Riwayat Pembayaran</h2>
 
-    <?php $role = $_SESSION['user_role'] ?? ''; ?>
-    <?php if ($role === 'penyewa' && $kontrak['status'] === 'aktif'): ?>
+    <?php 
+    $role = $_SESSION['user_role'] ?? '';
+    $tagihan = $role === 'penyewa' ? (new \App\Models\Pembayaran())->getUnpaidByKontrak($kontrak['id']) : [];
+    ?>
+    <?php if ($role === 'penyewa' && $kontrak['status'] === 'aktif' && !empty($tagihan)): ?>
     <a href="/pembayaran/bayar/<?= $kontrak['id'] ?>" class="bg-green-600 text-white px-4 py-2 rounded inline-block mb-3">Bayar Sewa</a>
     <?php elseif ($role !== 'penyewa'): ?>
     <a href="/pembayaran/bayar/<?= $kontrak['id'] ?>" class="bg-green-600 text-white px-4 py-2 rounded inline-block mb-3">+ Catat Pembayaran</a>

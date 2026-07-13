@@ -43,7 +43,9 @@ $menungguApproval = array_filter($semuaKontrak, fn($k) => $k['status'] === 'menu
     <?php if (!empty($kontrakAktif)): ?>
     <div class="bg-white rounded shadow p-4 mb-6">
         <h2 class="font-bold text-lg mb-3">Kontrak Aktif</h2>
-        <?php foreach ($kontrakAktif as $k): ?>
+        <?php foreach ($kontrakAktif as $k): 
+            $tagihan = $pembayaranModel->getUnpaidByKontrak($k['id']);
+        ?>
         <div class="flex justify-between items-center border-b py-3">
             <div>
                 <p class="font-semibold">Kamar <?= Security::escapeHtml($k['nomor_kamar']) ?></p>
@@ -51,7 +53,9 @@ $menungguApproval = array_filter($semuaKontrak, fn($k) => $k['status'] === 'menu
             </div>
             <div class="flex gap-2">
                 <a href="/kontrak/detail/<?= $k['id'] ?>" class="text-violet-600 text-sm">Detail</a>
+                <?php if (!empty($tagihan)): ?>
                 <a href="/pembayaran/bayar/<?= $k['id'] ?>" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">Bayar</a>
+                <?php endif; ?>
             </div>
         </div>
         <?php endforeach; ?>
