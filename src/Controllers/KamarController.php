@@ -13,20 +13,18 @@ use App\Models\Kontrak;
 class KamarController
 {
     private Kamar $kamar;
-    private FileUploader $uploader;
+    private string $uploadPath;
 
     public function __construct()
     {
         Auth::check();
         $this->kamar = new Kamar();
-        $this->uploader = new FileUploader(
-            dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'kamar',
-            ['image/jpeg', 'image/png', 'image/jpg']
-        );
+        $this->uploadPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'kamar' . DIRECTORY_SEPARATOR;
     }
 
     public function index(): void
     {
+        // Semua role bisa lihat daftar kamar
         Auth::role(['admin', 'pemilik', 'penyewa']);
 
         $status = $_GET['status'] ?? '';
@@ -60,7 +58,15 @@ class KamarController
             $v->required('harga', $_POST['harga'], 'Harga');
             $v->numeric('harga', $_POST['harga'], 'Harga');
 
-            $foto = $this->uploader->upload($_FILES['foto'] ?? [], 'kamar');
+            $foto = null;
+            if (!empty($_FILES['foto']['name'])) {
+                $v->file('foto', $_FILES['foto'], ['image/jpeg', 'image/png', 'image/jpg'], 2097152, 'Foto');
+                if ($v->passes()) {
+                    $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+                    $foto = 'kamar_' . time() . '.' . $ext;
+                    move_uploaded_file($_FILES['foto']['tmp_name'], $this->uploadPath . $foto);
+                }
+            }
 
             if ($v->passes()) {
                 $_POST['foto'] = $foto;
@@ -101,15 +107,26 @@ class KamarController
 
             $foto = $kamar['foto'];
 
+            // Hapus foto jika dicentang
             if (isset($_POST['hapus_foto']) && $_POST['hapus_foto'] == '1') {
-                $this->uploader->delete($kamar['foto']);
+                if ($kamar['foto'] && file_exists($this->uploadPath . $kamar['foto'])) {
+                    unlink($this->uploadPath . $kamar['foto']);
+                }
                 $foto = null;
             }
 
-            $newFoto = $this->uploader->upload($_FILES['foto'] ?? [], 'kamar');
-            if ($newFoto !== null) {
-                $this->uploader->delete($foto);
-                $foto = $newFoto;
+            // Upload foto baru jika ada
+            if (!empty($_FILES['foto']['name'])) {
+                $v->file('foto', $_FILES['foto'], ['image/jpeg', 'image/png', 'image/jpg'], 2097152, 'Foto');
+                if ($v->passes()) {
+                    $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+                    $newFoto = 'kamar_' . time() . '.' . $ext;
+                    move_uploaded_file($_FILES['foto']['tmp_name'], $this->uploadPath . $newFoto);
+                    if ($foto && file_exists($this->uploadPath . $foto)) {
+                        unlink($this->uploadPath . $foto);
+                    }
+                    $foto = $newFoto;
+                }
             }
 
             if ($v->passes()) {
@@ -132,17 +149,8 @@ class KamarController
         Auth::role(['admin', 'pemilik']);
 
         $kamar = $this->kamar->find($id);
-        if (!$kamar) {
-            http_response_code(404);
-            require_once __DIR__ . '/../../views/errors/404.php';
-            return;
-        }
-
-        $kontrakModel = new Kontrak();
-        if ($kontrakModel->hasActiveByKamar($id)) {
-            Session::setFlash('error', 'Kamar tidak bisa dihapus karena masih ada kontrak aktif.');
-            header('Location: /kamar/index');
-            exit;
+        if ($kamar && $kamar['foto'] && file_exists($this->uploadPath . $kamar['foto'])) {
+            unlink($this->uploadPath . $kamar['foto']);
         }
 
         $this->uploader->delete($kamar['foto']);

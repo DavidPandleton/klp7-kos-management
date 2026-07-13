@@ -1,17 +1,15 @@
 <?php 
 require_once __DIR__ . '/../../src/Helpers/Security.php';
 use App\Helpers\Security;
-$role = $_SESSION['user_role'] ?? '';
+$role = $_SESSION['role'] ?? '';
 $isOwner = in_array($role, ['admin', 'pemilik']);
-$filter_role = $role === 'penyewa' ? ' AND status = \'tersedia\'' : '';
-$data = isset($data) ? $data : [];
 ?>
 <?php require_once __DIR__ . '/../layouts/header.php'; ?>
 <div class="max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-4">
         <h1 class="text-2xl font-bold">Daftar Kamar</h1>
         <?php if ($isOwner): ?>
-        <a href="/kamar/create" class="bg-violet-600 text-white px-4 py-2 rounded hover:bg-violet-700">+ Tambah Kamar</a>
+        <a href="/kamar/create" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Tambah Kamar</a>
         <?php endif; ?>
     </div>
 
@@ -45,7 +43,7 @@ $data = isset($data) ? $data : [];
             </p>
             <p class="text-gray-500 text-sm mt-1">Fasilitas: <?= Security::escapeHtml($row['fasilitas']) ?></p>
             <div class="mt-3 flex gap-2">
-                <a href="/kamar/detail/<?= $row['id'] ?>" class="text-violet-600 text-sm">Detail</a>
+                <a href="/kamar/detail/<?= $row['id'] ?>" class="text-blue-600 text-sm">Detail</a>
                 <?php if ($isOwner): ?>
                 <a href="/kamar/edit/<?= $row['id'] ?>" class="text-yellow-600 text-sm">Edit</a>
                 <a href="/kamar/delete/<?= $row['id'] ?>" class="text-red-600 text-sm" onclick="return confirm('Yakin hapus?')">Hapus</a>
