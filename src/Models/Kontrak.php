@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Config\Database;
 use PDO;
+use App\Helpers\Security;
 
 class Kontrak
 {
@@ -37,7 +38,12 @@ class Kontrak
                 WHERE k.id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
-        return $stmt->fetch();
+        $row = $stmt->fetch();
+        if ($row && isset($row['no_telepon'])) {
+            $decrypted = Security::decrypt($row['no_telepon'], Security::ENCRYPTION_KEY);
+            $row['no_telepon'] = $decrypted !== false ? $decrypted : $row['no_telepon'];
+        }
+        return $row;
     }
 
     public function create(array $data): int

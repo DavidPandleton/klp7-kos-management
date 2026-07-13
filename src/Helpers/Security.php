@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 class Security
 {
+    public const ENCRYPTION_KEY = 'k0sKu_S3cr3t_K3y_2026!';
     public static function hashPassword(string $password): string
     {
         return password_hash($password, PASSWORD_BCRYPT);

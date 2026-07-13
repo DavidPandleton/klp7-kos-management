@@ -8,7 +8,7 @@ CREATE TABLE users (
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role ENUM('admin', 'pemilik', 'penyewa') NOT NULL DEFAULT 'penyewa',
-    no_telepon VARCHAR(20),
+    no_telepon TEXT,
     alamat TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
