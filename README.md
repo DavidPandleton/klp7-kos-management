@@ -20,7 +20,7 @@ Project mata kuliah **Pengembangan Sistem Backend (SI253314)** --  Kelompok 7
 ## Instalasi
 
 ### Persyaratan
-- PHP 8.x
+- PHP 8.x (extensions: `mbstring`, `fileinfo`, `openssl`)
 - MySQL (XAMPP / phpMyAdmin)
 - Composer
 

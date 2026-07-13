@@ -39,7 +39,7 @@ class Kontrak
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         $row = $stmt->fetch();
-        if ($row && isset($row['no_telepon'])) {
+        if ($row && !empty($row['no_telepon']) && strlen($row['no_telepon']) > 30 && str_ends_with($row['no_telepon'], '=')) {
             $decrypted = Security::decrypt($row['no_telepon'], Security::ENCRYPTION_KEY);
             $row['no_telepon'] = $decrypted !== false ? $decrypted : $row['no_telepon'];
         }

@@ -39,7 +39,7 @@ require_once __DIR__ . '/../layouts/header.php'; ?>
             <tr class="border-t <?= $i % 2 == 0 ? 'bg-gray-50' : '' ?>">
                 <td class="p-2"><?= Security::escapeHtml($row['nama_penyewa']) ?></td>
                 <td class="p-2"><?= Security::escapeHtml($row['nomor_kamar'] ?? '-') ?></td>
-                <td class="p-2"><?= Security::escapeHtml(mb_substr($row['keluhan'], 0, 50)) ?>...</td>
+                <td class="p-2"><?= Security::escapeHtml(substr($row['keluhan'], 0, 50)) ?>...</td>
                 <td class="p-2">
                     <span class="px-2 py-1 rounded text-white text-xs
                         <?= $row['status'] == 'baru' ? 'bg-red-500' : ($row['status'] == 'diproses' ? 'bg-yellow-500' : 'bg-green-500') ?>">
