@@ -22,11 +22,14 @@ class LaporanController
 
     public function pdf(): void
     {
-        $bulan = $_GET['bulan'] ?? date('n');
-        $tahun = $_GET['tahun'] ?? date('Y');
+        $bulan = $_GET['bulan'] ?? '';
+        $tahun = $_GET['tahun'] ?? '';
+
+        if (!ctype_digit($bulan) || $bulan < 1 || $bulan > 12) $bulan = date('n');
+        if (!ctype_digit($tahun) || $tahun < 2024 || $tahun > 2099) $tahun = date('Y');
 
         $pembayaranModel = new Pembayaran();
-        $data = $pembayaranModel->getAll(" AND MONTH(p.tgl_bayar) = ? AND YEAR(p.tgl_bayar) = ? AND p.status = 'lunas'", [$bulan, $tahun]);
+        $data = $pembayaranModel->getAll(" AND MONTH(p.tgl_bayar) = ? AND YEAR(p.tgl_bayar) = ? AND p.status = 'lunas'", [(int)$bulan, (int)$tahun]);
 
         $namaBulan = [
             1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',

@@ -61,8 +61,21 @@ class Pembayaran
 
     public function konfirmasi(int $id): void
     {
-        $stmt = $this->db->prepare("UPDATE pembayaran SET status = 'lunas', tgl_bayar = CURDATE() WHERE id = ?");
-        $stmt->execute([$id]);
+        $bayar = $this->find($id);
+        if (!$bayar) return;
+
+        $tglJatuhTempo = sprintf('%04d-%02d-10', $bayar['tahun'], $bayar['bulan']);
+        $hariIni = new \DateTime();
+        $jatuhTempo = new \DateTime($tglJatuhTempo);
+        $denda = 0;
+
+        if ($hariIni > $jatuhTempo) {
+            $selisih = (int) $hariIni->diff($jatuhTempo)->days;
+            $denda = $selisih * 5000;
+        }
+
+        $stmt = $this->db->prepare("UPDATE pembayaran SET status = 'lunas', tgl_bayar = CURDATE(), denda = ? WHERE id = ?");
+        $stmt->execute([$denda, $id]);
     }
 
     public function tolak(int $id): void
@@ -76,6 +89,30 @@ class Pembayaran
         $stmt = $this->db->prepare("SELECT * FROM pembayaran WHERE kontrak_id = ? ORDER BY tahun DESC, bulan DESC");
         $stmt->execute([$kontrakId]);
         return $stmt->fetchAll();
+    }
+
+    public function getUnpaidByKontrak(int $kontrakId): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM pembayaran WHERE kontrak_id = ? AND status = 'belum_bayar' ORDER BY tahun, bulan"
+        );
+        $stmt->execute([$kontrakId]);
+        return $stmt->fetchAll();
+    }
+
+    public function findUnpaidByKontrakBulan(int $kontrakId, int $bulan, int $tahun): array|false
+    {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM pembayaran WHERE kontrak_id = ? AND bulan = ? AND tahun = ? AND status = 'belum_bayar' LIMIT 1"
+        );
+        $stmt->execute([$kontrakId, $bulan, $tahun]);
+        return $stmt->fetch();
+    }
+
+    public function updateToMenunggu(int $id, string $jumlah, ?string $bukti): void
+    {
+        $stmt = $this->db->prepare("UPDATE pembayaran SET status = 'menunggu', jumlah = ?, bukti = ? WHERE id = ?");
+        $stmt->execute([$jumlah, $bukti, $id]);
     }
 
     public function getUnconfirmed(): array

@@ -1,8 +1,12 @@
-<?php require_once __DIR__ . '/../layouts/header.php'; ?>
+<?php 
+require_once __DIR__ . '/../../src/Helpers/Security.php';
+use App\Helpers\Security;
+require_once __DIR__ . '/../layouts/header.php'; ?>
 <div class="max-w-2xl mx-auto bg-white rounded shadow p-6">
     <h1 class="text-2xl font-bold mb-4">Selesaikan Pengaduan</h1>
     <p class="mb-4"><strong>Keluhan:</strong> <?= Security::escapeHtml($data['keluhan']) ?></p>
     <form method="POST">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCsrfToken() ?>">
         <div class="mb-4">
             <label class="block text-gray-700">Respon / Tindakan</label>
             <textarea name="respon" rows="4" required class="w-full border rounded px-3 py-2" placeholder="Jelaskan tindakan yang dilakukan..."></textarea>
@@ -12,3 +16,6 @@
     </form>
 </div>
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
+
+
+

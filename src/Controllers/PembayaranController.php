@@ -8,6 +8,7 @@ use App\Middleware\Auth;
 use App\Helpers\Session;
 use App\Helpers\Security;
 use App\Helpers\Validator;
+use App\Helpers\FileUploader;
 
 class PembayaranController
 {
@@ -46,28 +47,43 @@ class PembayaranController
             return;
         }
 
+        $role = Auth::getUserRole();
+        if ($role === 'penyewa') {
+            if ($kontrak['status'] !== 'aktif' || (int) $kontrak['penyewa_id'] !== Auth::getUserId()) {
+                http_response_code(403);
+                require_once __DIR__ . '/../../views/errors/403.php';
+                return;
+            }
+        } else {
+            Auth::role(['admin', 'pemilik']);
+        }
+
+        $tagihanBelumBayar = $this->pembayaran->getUnpaidByKontrak($kontrakId);
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                require_once __DIR__ . '/../../views/pembayaran/bayar.php';
+                return;
+            }
+
             $v = new Validator();
             $v->required('jumlah', $_POST['jumlah'], 'Jumlah bayar');
             $v->numeric('jumlah', $_POST['jumlah'], 'Jumlah bayar');
 
-            $bukti = null;
-            if (!empty($_FILES['bukti']['name'])) {
-                $v->file('bukti', $_FILES['bukti'], ['image/jpeg', 'image/png', 'application/pdf'], 2097152, 'Bukti transfer');
-                if ($v->passes()) {
-                    $ext = pathinfo($_FILES['bukti']['name'], PATHINFO_EXTENSION);
-                    $bukti = 'bayar_' . time() . '.' . $ext;
-                    move_uploaded_file($_FILES['bukti']['tmp_name'], __DIR__ . '/../../uploads/bukti_bayar/' . $bukti);
-                }
-            }
+            $uploader = new FileUploader(dirname(__DIR__, 2) . '/public/uploads/bukti_bayar', ['image/jpeg', 'image/png', 'application/pdf']);
+            $bukti = $uploader->upload($_FILES['bukti'] ?? [], 'bayar');
 
             if ($v->passes()) {
-                $_POST['kontrak_id'] = $kontrakId;
-                $_POST['bukti'] = $bukti;
-                $_POST['status'] = 'menunggu';
-                $_POST['bulan'] = date('n');
-                $_POST['tahun'] = date('Y');
-                $this->pembayaran->create($_POST);
+                $bulanDipilih = (int) ($_POST['bulan'] ?? 0);
+                $tahunDipilih = (int) ($_POST['tahun'] ?? 0);
+                $tagihan = $this->pembayaran->findUnpaidByKontrakBulan($kontrakId, $bulanDipilih, $tahunDipilih);
+                if (!$tagihan) {
+                    Session::setFlash('error', 'Periode yang dipilih sudah dibayar atau tidak valid.');
+                    require_once __DIR__ . '/../../views/pembayaran/bayar.php';
+                    return;
+                }
+                $this->pembayaran->updateToMenunggu($tagihan['id'], $_POST['jumlah'], $bukti);
                 Session::setFlash('success', 'Pembayaran diajukan, tunggu konfirmasi.');
                 header('Location: /kontrak/detail/' . $kontrakId);
                 exit;
@@ -92,8 +108,9 @@ class PembayaranController
     {
         Auth::role(['admin', 'pemilik']);
         $bayar = $this->pembayaran->find($id);
-        if ($bayar && $bayar['bukti'] && file_exists(__DIR__ . '/../../uploads/bukti_bayar/' . $bayar['bukti'])) {
-            unlink(__DIR__ . '/../../uploads/bukti_bayar/' . $bayar['bukti']);
+        if ($bayar) {
+            $uploader = new FileUploader(dirname(__DIR__, 2) . '/public/uploads/bukti_bayar');
+            $uploader->delete($bayar['bukti']);
         }
         $this->pembayaran->tolak($id);
         Session::setFlash('error', 'Pembayaran ditolak.');

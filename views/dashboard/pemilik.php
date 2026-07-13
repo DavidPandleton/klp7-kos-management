@@ -1,3 +1,7 @@
+<?php 
+require_once __DIR__ . '/../../src/Helpers/Security.php';
+use App\Helpers\Security;
+?>
 <?php require_once __DIR__ . '/../layouts/header.php'; ?>
 <div class="max-w-7xl mx-auto">
     <h1 class="text-2xl font-bold mb-6">Dashboard Pemilik</h1>
@@ -9,7 +13,7 @@
         </div>
         <div class="bg-white rounded shadow p-4">
             <p class="text-gray-500 text-sm">Kamar Terisi</p>
-            <p class="text-3xl font-bold text-blue-600"><?= $data['kamar_terisi'] ?></p>
+            <p class="text-3xl font-bold text-violet-600"><?= $data['kamar_terisi'] ?></p>
         </div>
         <div class="bg-white rounded shadow p-4">
             <p class="text-gray-500 text-sm">Penyewa Aktif</p>
@@ -30,7 +34,7 @@
                 <?php foreach ($data['pembayaran_menunggu'] as $p): ?>
                     <div class="border-b py-2 flex justify-between">
                         <span><?= Security::escapeHtml($p['nama_penyewa']) ?> - <?= Security::escapeHtml($p['nomor_kamar']) ?></span>
-                        <a href="/pembayaran/index" class="text-blue-600 text-sm">Konfirmasi</a>
+                        <a href="/pembayaran/index" class="text-violet-600 text-sm">Konfirmasi</a>
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
@@ -44,7 +48,7 @@
                 <?php foreach ($data['pengaduan_aktif'] as $a): ?>
                     <div class="border-b py-2 flex justify-between">
                         <span><?= Security::escapeHtml($a['nama_penyewa']) ?> - <?= Security::escapeHtml($a['keluhan']) ?></span>
-                        <a href="/pengaduan/detail/<?= $a['id'] ?>" class="text-blue-600 text-sm">Lihat</a>
+                        <a href="/pengaduan/detail/<?= $a['id'] ?>" class="text-violet-600 text-sm">Lihat</a>
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>

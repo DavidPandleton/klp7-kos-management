@@ -48,7 +48,7 @@ class Pengaduan
         );
         $stmt->execute([
             $data['penyewa_id'],
-            $data['kamar_id'] ?? null,
+            !empty($data['kamar_id']) ? $data['kamar_id'] : null,
             $data['keluhan'],
             $data['foto'] ?? null,
             'baru'

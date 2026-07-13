@@ -7,6 +7,7 @@ use App\Middleware\Auth;
 use App\Helpers\Session;
 use App\Helpers\Security;
 use App\Helpers\Validator;
+use App\Helpers\FileUploader;
 
 class PengaduanController
 {
@@ -42,18 +43,17 @@ class PengaduanController
     public function create(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                require_once __DIR__ . '/../../views/pengaduan/create.php';
+                return;
+            }
+
             $v = new Validator();
             $v->required('keluhan', $_POST['keluhan'], 'Keluhan');
 
-            $foto = null;
-            if (!empty($_FILES['foto']['name'])) {
-                $v->file('foto', $_FILES['foto'], ['image/jpeg', 'image/png', 'image/jpg'], 2097152, 'Foto');
-                if ($v->passes()) {
-                    $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-                    $foto = 'aduan_' . time() . '.' . $ext;
-                    move_uploaded_file($_FILES['foto']['tmp_name'], __DIR__ . '/../../uploads/pengaduan/' . $foto);
-                }
-            }
+            $uploader = new FileUploader(dirname(__DIR__, 2) . '/public/uploads/pengaduan', ['image/jpeg', 'image/png', 'image/jpg']);
+            $foto = $uploader->upload($_FILES['foto'] ?? [], 'aduan');
 
             if ($v->passes()) {
                 $_POST['penyewa_id'] = Auth::getUserId();
@@ -78,6 +78,11 @@ class PengaduanController
             require_once __DIR__ . '/../../views/errors/404.php';
             return;
         }
+        if (Auth::getUserRole() === 'penyewa' && (int) $data['penyewa_id'] !== Auth::getUserId()) {
+            http_response_code(403);
+            require_once __DIR__ . '/../../views/errors/403.php';
+            return;
+        }
         require_once __DIR__ . '/../../views/pengaduan/detail.php';
     }
 
@@ -94,6 +99,12 @@ class PengaduanController
     {
         Auth::role(['admin', 'pemilik']);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                header('Location: /pengaduan/detail/' . $id);
+                exit;
+            }
+
             $this->pengaduan->updateStatus($id, 'selesai', $_POST['respon']);
             Session::setFlash('success', 'Pengaduan selesai.');
             header('Location: /pengaduan/index');

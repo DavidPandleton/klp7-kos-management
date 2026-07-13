@@ -13,6 +13,7 @@ class Auth
             header('Location: /auth/login');
             exit;
         }
+        Session::setTimeout(30);
     }
 
     public static function role(array $roles): void

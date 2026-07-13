@@ -34,6 +34,13 @@ class User
         return $stmt->fetch();
     }
 
+    public function findByUsername(string $username): array|false
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE username = ?");
+        $stmt->execute([$username]);
+        return $stmt->fetch();
+    }
+
     public function create(array $data): int
     {
         $stmt = $this->db->prepare(

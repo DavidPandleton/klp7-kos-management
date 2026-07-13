@@ -17,6 +17,7 @@
         <?php endif; ?>
 
         <form method="POST">
+            <input type="hidden" name="csrf_token" value="<?= \App\Helpers\Security::generateCsrfToken() ?>">
             <div class="mb-4">
                 <label class="block text-gray-700 mb-1">Nama Lengkap</label>
                 <input type="text" name="username" required class="w-full border rounded px-3 py-2">
@@ -33,10 +34,10 @@
                 <label class="block text-gray-700 mb-1">No Telepon</label>
                 <input type="text" name="no_telepon" class="w-full border rounded px-3 py-2">
             </div>
-            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Daftar</button>
+            <button type="submit" class="w-full bg-violet-600 text-white py-2 rounded hover:bg-violet-700">Daftar</button>
         </form>
         <p class="text-center mt-4 text-gray-600">
-            Sudah punya akun? <a href="/auth/login" class="text-blue-600 hover:underline">Login</a>
+            Sudah punya akun? <a href="/auth/login" class="text-violet-600 hover:underline">Login</a>
         </p>
     </div>
 </body>

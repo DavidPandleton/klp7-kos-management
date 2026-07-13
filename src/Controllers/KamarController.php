@@ -7,6 +7,8 @@ use App\Middleware\Auth;
 use App\Helpers\Session;
 use App\Helpers\Security;
 use App\Helpers\Validator;
+use App\Helpers\FileUploader;
+use App\Models\Kontrak;
 
 class KamarController
 {
@@ -29,7 +31,9 @@ class KamarController
         $filter = '';
         $params = [];
 
-        if (!empty($status)) {
+        if (Auth::getUserRole() === 'penyewa') {
+            $filter .= " AND status = 'tersedia'";
+        } elseif (!empty($status)) {
             $filter .= " AND status = ?";
             $params[] = $status;
         }
@@ -43,6 +47,12 @@ class KamarController
         Auth::role(['admin', 'pemilik']);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                require_once __DIR__ . '/../../views/kamar/create.php';
+                return;
+            }
+
             $v = new Validator();
             $v->required('nomor_kamar', $_POST['nomor_kamar'], 'Nomor kamar');
             $v->required('harga', $_POST['harga'], 'Harga');
@@ -85,6 +95,12 @@ class KamarController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Security::verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+                Session::setFlash('error', 'Token tidak valid.');
+                require_once __DIR__ . '/../../views/kamar/edit.php';
+                return;
+            }
+
             $v = new Validator();
             $v->required('nomor_kamar', $_POST['nomor_kamar'], 'Nomor kamar');
             $v->numeric('harga', $_POST['harga'], 'Harga');
@@ -136,6 +152,8 @@ class KamarController
         if ($kamar && $kamar['foto'] && file_exists($this->uploadPath . $kamar['foto'])) {
             unlink($this->uploadPath . $kamar['foto']);
         }
+
+        $this->uploader->delete($kamar['foto']);
         $this->kamar->delete($id);
         Session::setFlash('success', 'Kamar berhasil dihapus.');
         header('Location: /kamar/index');

@@ -21,10 +21,7 @@ class Security
 
     public static function sanitizeInput(string $data): string
     {
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        return $data;
+        return trim($data);
     }
 
     public static function encrypt(string $data, string $key): string

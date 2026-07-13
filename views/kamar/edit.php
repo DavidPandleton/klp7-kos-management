@@ -8,6 +8,7 @@ $fasilitasTersimpan = array_map('trim', explode(',', $kamar['fasilitas'] ?? ''))
 <div class="max-w-2xl mx-auto bg-white rounded shadow p-6">
     <h1 class="text-2xl font-bold mb-4">Edit Kamar</h1>
     <form method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCsrfToken() ?>">
         <div class="mb-3">
             <label class="block text-gray-700">Nomor Kamar</label>
             <input type="text" name="nomor_kamar" value="<?= Security::escapeHtml($kamar['nomor_kamar']) ?>" required class="w-full border rounded px-3 py-2">
@@ -53,7 +54,7 @@ $fasilitasTersimpan = array_map('trim', explode(',', $kamar['fasilitas'] ?? ''))
             <?php endif; ?>
             <input type="file" name="foto" accept="image/*" class="w-full border rounded px-3 py-2 mt-2">
         </div>
-        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Update</button>
+        <button type="submit" class="bg-violet-600 text-white px-6 py-2 rounded hover:bg-violet-700">Update</button>
         <a href="/kamar/index" class="ml-2 text-gray-600">Batal</a>
     </form>
 </div>

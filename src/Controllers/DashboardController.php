@@ -36,6 +36,7 @@ class DashboardController
             $data['pendapatan_bulan_ini'] = $pembayaranModel->getMonthlyRevenue((int)date('n'), (int)date('Y'));
             $data['pembayaran_menunggu'] = $pembayaranModel->getUnconfirmed();
             $data['pengaduan_aktif'] = $pengaduanModel->getActive();
+            $data['kontrak_menunggu'] = $kontrakModel->getMenunggu();
         }
 
         require_once __DIR__ . '/../../views/dashboard/' . $role . '.php';

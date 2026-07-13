@@ -2,6 +2,7 @@
 <div class="max-w-2xl mx-auto bg-white rounded shadow p-6">
     <h1 class="text-2xl font-bold mb-4">Tambah Kamar</h1>
     <form method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="<?= \App\Helpers\Security::generateCsrfToken() ?>">
         <div class="mb-3">
             <label class="block text-gray-700">Nomor Kamar</label>
             <input type="text" name="nomor_kamar" required class="w-full border rounded px-3 py-2">
@@ -40,7 +41,7 @@
             <label class="block text-gray-700">Foto Kamar</label>
             <input type="file" name="foto" accept="image/*" class="w-full border rounded px-3 py-2">
         </div>
-        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Simpan</button>
+        <button type="submit" class="bg-violet-600 text-white px-6 py-2 rounded hover:bg-violet-700">Simpan</button>
         <a href="/kamar/index" class="ml-2 text-gray-600">Batal</a>
     </form>
 </div>
